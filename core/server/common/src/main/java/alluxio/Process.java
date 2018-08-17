@@ -12,7 +12,7 @@
 package alluxio;
 
 /**
- * Interface representing an Alluxio process.
+ * Inteddrface representing an Alluxio process.
  */
 public interface Process {
 
