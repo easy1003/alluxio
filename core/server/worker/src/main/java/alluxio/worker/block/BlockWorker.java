@@ -391,4 +391,10 @@ public interface BlockWorker extends Worker, SessionCleanable {
   void closeUfsBlock(long sessionId, long blockId)
       throws BlockAlreadyExistsException, BlockDoesNotExistException, IOException,
       WorkerOutOfSpaceException;
+
+  boolean getCachePermission(long sessionId, long blockId)
+          throws Exception;
+
+  void cacheFailedDecrease(long sessionId, long blockId)
+          throws Exception;
 }

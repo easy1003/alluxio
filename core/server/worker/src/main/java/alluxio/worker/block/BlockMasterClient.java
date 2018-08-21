@@ -21,6 +21,8 @@ import alluxio.thrift.Command;
 import alluxio.thrift.CommitBlockTOptions;
 import alluxio.thrift.GetWorkerIdTOptions;
 import alluxio.thrift.RegisterWorkerTOptions;
+import alluxio.thrift.GetCachePermissionTOptions;
+import alluxio.thrift.CacheFailedDecreaseTOptions;
 import alluxio.wire.ThriftUtils;
 import alluxio.wire.WorkerNetAddress;
 
@@ -87,6 +89,25 @@ public final class BlockMasterClient extends AbstractMasterClient {
       public Void call() throws TException {
         mClient.commitBlock(workerId, usedBytesOnTier, tierAlias, blockId, length,
             new CommitBlockTOptions());
+        return null;
+      }
+    });
+  }
+
+  public synchronized boolean getCachePermision(final long blockId) throws Exception{
+    return retryRPC(new RpcCallable<Boolean>() {
+      @Override
+      public Boolean call() throws TException{
+        return mClient.getCachePermission(blockId, new GetCachePermissionTOptions()).isIsCache();
+      }
+    });
+  }
+
+  public synchronized void cacheFailedDecrease(final long blockId) throws Exception{
+    retryRPC(new RpcCallable<Void>() {
+      @Override
+      public Void call() throws TException{
+        mClient.cacheFailedDecrease(blockId, new CacheFailedDecreaseTOptions());
         return null;
       }
     });
