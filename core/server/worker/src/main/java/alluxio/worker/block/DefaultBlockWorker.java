@@ -321,6 +321,20 @@ public final class DefaultBlockWorker extends AbstractWorker implements BlockWor
   }
 
   @Override
+  public boolean getCachePermision(long sessionId, long blockId) throws Exception{
+      BlockMasterClient blockMasterClient = mBlockMasterClientPool.acquire();
+      boolean isCache;
+      isCache = blockMasterClient.getCachePermision(blockId);
+      return isCache;
+  }
+
+  @Override
+  public void cacheFailedDecrease(long sessionId, long blockId) throws Exception{
+      BlockMasterClient blockMasterClient = mBlockMasterClientPool.acquire();
+      blockMasterClient.cacheFailedDecrease(blockId);
+  }
+
+  @Override
   public String createBlock(long sessionId, long blockId, String tierAlias, long initialBytes)
       throws BlockAlreadyExistsException, WorkerOutOfSpaceException, IOException {
     BlockStoreLocation loc = BlockStoreLocation.anyDirInTier(tierAlias);
