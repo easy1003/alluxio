@@ -26,6 +26,10 @@ import alluxio.thrift.GetWorkerIdTOptions;
 import alluxio.thrift.GetWorkerIdTResponse;
 import alluxio.thrift.RegisterWorkerTOptions;
 import alluxio.thrift.RegisterWorkerTResponse;
+import alluxio.thrift.GetCachePermissionTOptions;
+import alluxio.thrift.GetCachePermissionTResponse;
+import alluxio.thrift.CacheFailedDecreaseTOptions;
+import alluxio.thrift.CacheFailedDecreaseTResponse;
 import alluxio.thrift.WorkerNetAddress;
 import alluxio.wire.ThriftUtils;
 
@@ -102,6 +106,41 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
                 + "blockId=%s, length=%s, options=%s", workerId, usedBytesOnTier, tierAlias,
             blockId,
             length, options);
+      }
+    });
+  }
+
+  @Override
+  public GetCachePermissionTResponse getCachePermission(final long blockId,
+      GetCachePermissionTOptions options) throws AlluxioTException{
+    return RpcUtils.call(LOG, new RpcUtils.RpcCallable<GetCachePermissionTResponse>() {
+      @Override
+      public GetCachePermissionTResponse call() throws AlluxioException {
+        /* todo mBlockMaster.getCachePermission*/
+        return new GetCachePermissionTResponse(
+          true
+        );
+      }
+
+      @Override
+      public String toString(){
+        return String.format("getCachePermission: blockId=%s, options=%s",blockId, options);
+      }
+    });
+  }
+
+  @Override
+  public CacheFailedDecreaseTResponse cacheFailedDecrease(final long blockId,
+      CacheFailedDecreaseTOptions options) throws AlluxioTException{
+    return RpcUtils.call(LOG, new RpcUtils.RpcCallable<CacheFailedDecreaseTResponse>() {
+      @Override
+      public CacheFailedDecreaseTResponse call() throws AlluxioException {
+        return new CacheFailedDecreaseTResponse();
+      }
+
+      @Override
+      public String toString(){
+        return String.format("cacheFailedDecrease: blockId=%s, options=%s",blockId, options);
       }
     });
   }

@@ -174,4 +174,8 @@ public interface BlockMaster extends Master, ContainerIdGenerable {
    * @param blockIds the ids of the lost blocks
    */
   void reportLostBlocks(List<Long> blockIds);
+
+  boolean getCachePermission(long blockId);
+
+  void cacheFailedDecrease(long blockId);
 }

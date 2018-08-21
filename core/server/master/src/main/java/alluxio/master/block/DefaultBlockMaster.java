@@ -136,6 +136,9 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   /** Keeps track of blocks which are no longer in Alluxio storage. */
   private final ConcurrentHashSet<Long> mLostBlocks = new ConcurrentHashSet<>(64, 0.90f, 64);
 
+  private final ConcurrentHashMap<Long, Integer> mBlockCacheInfo =
+      new ConcurrentHashMap<>(8192,0.90f,64);
+
   /** This state must be journaled. */
   @GuardedBy("itself")
   private final BlockContainerIdGenerator mBlockContainerIdGenerator =
@@ -504,6 +507,17 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
         }
       }
     }
+  }
+
+  @Override
+  public boolean getCachePermission(long blockId){
+    /* todo */
+    return true;
+  }
+
+  @Override
+  public void cacheFailedDecrease(long blockId){
+    /* todo */
   }
 
   @Override
