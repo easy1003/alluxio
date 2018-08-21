@@ -85,6 +85,13 @@ struct GetWorkerIdTResponse {
 struct RegisterWorkerTOptions {}
 struct RegisterWorkerTResponse {}
 
+struct GetCachePermissionTOptions {}
+struct GetCachePermissionTResponse {
+  1: bool isCache
+}
+struct CacheFailedDecreaseTOptions{}
+struct CacheFailedDecreaseTResponse{}
+
 /**
  * This interface contains block master service endpoints for Alluxio workers.
  */
@@ -136,4 +143,13 @@ service BlockMasterWorkerService extends common.AlluxioService {
     /** the method options */ 6: RegisterWorkerTOptions options,
     )
     throws (1: exception.AlluxioTException e)
+
+  GetCachePermissionTResponse getCachePermission(
+    /** the id of the block */ 1: i64 blockId,
+    /** the method options */ 2: GetCachePermissionTOptions options,
+    )
+  CacheFailedDecreaseTResponse cacheFailedDecrease(
+     /** the id of the block */ 1: i64 blockId,
+      /** the method options */ 2: CacheFailedDecreaseTOptions options,
+    )
 }
