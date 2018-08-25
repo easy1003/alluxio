@@ -18,6 +18,7 @@ import alluxio.WorkerStorageTierAssoc;
 import alluxio.exception.AlluxioException;
 import alluxio.exception.BlockAlreadyExistsException;
 import alluxio.exception.BlockDoesNotExistException;
+import alluxio.master.MasterClientConfig;
 import alluxio.proto.dataserver.Protocol;
 import alluxio.util.io.BufferUtils;
 import alluxio.util.network.NetworkAddressUtils;
@@ -66,51 +67,59 @@ public class AsyncCacheRequestManager {
    *
    * @param request the async cache request fields will be available
    */
-  public void submitRequest(Protocol.AsyncCacheRequest request) {
+  public void submitRequest(Protocol.AsyncCacheRequest request) throws Exception {
     long blockId = request.getBlockId();
     long blockLength = request.getLength();
     if (mPendingRequests.putIfAbsent(blockId, request) != null) {
       // This block is already planned.
       return;
     }
-    try {
-      mAsyncCacheExecutor.submit(() -> {
-        try {
-          // Check if the block has already been cached on this worker
-          long lockId = mBlockWorker.lockBlockNoException(Sessions.ASYNC_CACHE_SESSION_ID, blockId);
-          if (lockId != BlockLockManager.INVALID_LOCK_ID) {
-            try {
-              mBlockWorker.unlockBlock(lockId);
-            } catch (BlockDoesNotExistException e) {
-              LOG.error("Failed to unlock block on async caching. We should never reach here", e);
+
+
+    BlockMasterClient blockMasterClient = new BlockMasterClient(new MasterClientConfig());
+    Boolean flag = blockMasterClient.getCachePermision(blockId);
+
+
+    if(flag==true) {
+      try {
+        mAsyncCacheExecutor.submit(() -> {
+          try {
+            // Check if the block has already been cached on this worker
+            long lockId = mBlockWorker.lockBlockNoException(Sessions.ASYNC_CACHE_SESSION_ID, blockId);
+            if (lockId != BlockLockManager.INVALID_LOCK_ID) {
+              try {
+                mBlockWorker.unlockBlock(lockId);
+              } catch (BlockDoesNotExistException e) {
+                LOG.error("Failed to unlock block on async caching. We should never reach here", e);
+              }
+              return;
             }
-            return;
+            Protocol.OpenUfsBlockOptions openUfsBlockOptions = request.getOpenUfsBlockOptions();
+            boolean isSourceLocal = mLocalWorkerHostname.equals(request.getSourceHost());
+            // Depends on the request, cache the target block from different sources
+            boolean result;
+            if (isSourceLocal) {
+              result = cacheBlockFromUfs(blockId, blockLength, openUfsBlockOptions);
+            } else {
+              InetSocketAddress sourceAddress =
+                      new InetSocketAddress(request.getSourceHost(), request.getSourcePort());
+              result = cacheBlockFromRemoteWorker(
+                      blockId, blockLength, sourceAddress, openUfsBlockOptions);
+            }
+            LOG.debug("Result of async caching block {}: {}", blockId, result);
+          } catch (Exception e) {
+            LOG.warn("Failed to complete async cache request {} from UFS", request, e.getMessage());
+          } finally {
+            mPendingRequests.remove(blockId);
           }
-          Protocol.OpenUfsBlockOptions openUfsBlockOptions = request.getOpenUfsBlockOptions();
-          boolean isSourceLocal = mLocalWorkerHostname.equals(request.getSourceHost());
-          // Depends on the request, cache the target block from different sources
-          boolean result;
-          if (isSourceLocal) {
-            result = cacheBlockFromUfs(blockId, blockLength, openUfsBlockOptions);
-          } else {
-            InetSocketAddress sourceAddress =
-                new InetSocketAddress(request.getSourceHost(), request.getSourcePort());
-            result = cacheBlockFromRemoteWorker(
-                    blockId, blockLength, sourceAddress, openUfsBlockOptions);
-          }
-          LOG.debug("Result of async caching block {}: {}", blockId, result);
-        } catch (Exception e) {
-          LOG.warn("Failed to complete async cache request {} from UFS", request, e.getMessage());
-        } finally {
-          mPendingRequests.remove(blockId);
-        }
-      });
-    } catch (Exception e) {
-      // RuntimeExceptions (e.g. RejectedExecutionException) may be thrown in extreme cases when the
-      // netty thread pool is drained due to highly concurrent caching workloads. In these cases,
-      // return as async caching is at best effort.
-      LOG.warn("Failed to submit async cache request {}: {}", request, e.getMessage());
-      mPendingRequests.remove(blockId);
+        });
+      } catch (Exception e) {
+        // RuntimeExceptions (e.g. RejectedExecutionException) may be thrown in extreme cases when the
+        // netty thread pool is drained due to highly concurrent caching workloads. In these cases,
+        // return as async caching is at best effort.
+        LOG.warn("Failed to submit async cache request {}: {}", request, e.getMessage());
+        mPendingRequests.remove(blockId);
+      }
     }
   }
 

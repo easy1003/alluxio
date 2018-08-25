@@ -14,6 +14,8 @@ package alluxio.master.block;
 import alluxio.Constants;
 import alluxio.RpcUtils;
 import alluxio.exception.AlluxioException;
+import alluxio.exception.status.UnavailableException;
+import alluxio.master.MasterContext;
 import alluxio.thrift.AlluxioTException;
 import alluxio.thrift.BlockHeartbeatTOptions;
 import alluxio.thrift.BlockHeartbeatTResponse;
@@ -31,11 +33,13 @@ import alluxio.thrift.GetCachePermissionTResponse;
 import alluxio.thrift.CacheFailedDecreaseTOptions;
 import alluxio.thrift.CacheFailedDecreaseTResponse;
 import alluxio.thrift.WorkerNetAddress;
+import alluxio.wire.BlockInfo;
 import alluxio.wire.ThriftUtils;
 
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.util.List;
@@ -110,6 +114,8 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
     });
   }
 
+
+  /**20180824-1:30 modify**/
   @Override
   public GetCachePermissionTResponse getCachePermission(final long blockId,
       GetCachePermissionTOptions options) throws AlluxioTException{
@@ -117,8 +123,21 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
       @Override
       public GetCachePermissionTResponse call() throws AlluxioException {
         /* todo mBlockMaster.getCachePermission*/
+
+        boolean isCache =true;
+        List BlockInfolist = null;
+        try {
+          BlockInfolist = mBlockMaster.getBlockInfo(blockId).getLocations();
+        } catch (UnavailableException e) {
+          e.printStackTrace();
+        }
+        if(BlockInfolist.size()>2)
+        {
+          isCache =false;
+          LOG.info("isCache is false");
+        }
         return new GetCachePermissionTResponse(
-          true
+               isCache
         );
       }
 
