@@ -23,6 +23,7 @@ import alluxio.collections.IndexedSet;
 import alluxio.exception.BlockInfoException;
 import alluxio.exception.ExceptionMessage;
 import alluxio.exception.NoWorkerException;
+import alluxio.exception.status.DataLossException;
 import alluxio.exception.status.UnavailableException;
 import alluxio.heartbeat.HeartbeatContext;
 import alluxio.heartbeat.HeartbeatExecutor;
@@ -512,25 +513,28 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   @Override
   public boolean getCachePermission(long blockId){
     /* todo */
+    int mcount;
     boolean isCache =true;
-    List BlockInfolist = null;
-    try {
-      BlockInfolist = mBlockMaster.getBlockInfo(blockId).getLocations();
-    } catch (UnavailableException e) {
-      e.printStackTrace();
+    if(mBlockCacheInfo.contains(blockId)){
+       mcount =mBlockCacheInfo.get(blockId);
     }
-    if(BlockInfolist.size()>2)
-    {
-      isCache =false;
-      LOG.info("isCache is false");
+    else mcount=0;
+    if(mcount+1>2) isCache =false;
+    else {
+      if(mBlockCacheInfo.contains(blockId)){
+        mBlockCacheInfo.put(blockId,mBlockCacheInfo.get(blockId)+1);
+      }
+      else mBlockCacheInfo.put(blockId,1);
     }
-
-    return new GetCachePermissionTResponse(isCache);
+    return isCache;
   }
 
   @Override
   public void cacheFailedDecrease(long blockId){
     /* todo */
+    if(mBlockCacheInfo.contains(blockId) && mBlockCacheInfo.get(blockId)>0)
+      mBlockCacheInfo.put(blockId,mBlockCacheInfo.get(blockId)-1);
+
   }
 
   @Override

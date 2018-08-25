@@ -124,7 +124,7 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
       public GetCachePermissionTResponse call() throws AlluxioException {
         /* todo mBlockMaster.getCachePermission*/
 
-         return mBlockMaster.getCachePermission(blockId)
+         return new GetCachePermissionTResponse(mBlockMaster.getCachePermission(blockId));
       }
 
       @Override
