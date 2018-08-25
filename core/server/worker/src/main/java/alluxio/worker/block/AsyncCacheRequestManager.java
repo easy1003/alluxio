@@ -24,6 +24,7 @@ import alluxio.util.network.NetworkAddressUtils;
 import alluxio.worker.block.io.BlockReader;
 import alluxio.worker.block.io.BlockWriter;
 
+import org.eclipse.jetty.server.SessionIdManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,13 +67,17 @@ public class AsyncCacheRequestManager {
    *
    * @param request the async cache request fields will be available
    */
-  public void submitRequest(Protocol.AsyncCacheRequest request) {
+  public void submitRequest(Protocol.AsyncCacheRequest request) throws Exception {
     long blockId = request.getBlockId();
     long blockLength = request.getLength();
     if (mPendingRequests.putIfAbsent(blockId, request) != null) {
       // This block is already planned.
       return;
     }
+
+
+    if(mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID,blockId)==true)
+    {
     try {
       mAsyncCacheExecutor.submit(() -> {
         try {
@@ -101,6 +106,11 @@ public class AsyncCacheRequestManager {
           LOG.debug("Result of async caching block {}: {}", blockId, result);
         } catch (Exception e) {
           LOG.warn("Failed to complete async cache request {} from UFS", request, e.getMessage());
+          try {
+            mBlockWorker.cacheFailedDecrease(Sessions.ACCESS_BLOCK_SESSION_ID,blockId);
+          } catch (Exception e1) {
+            e1.printStackTrace();
+          }
         } finally {
           mPendingRequests.remove(blockId);
         }
@@ -111,8 +121,10 @@ public class AsyncCacheRequestManager {
       // return as async caching is at best effort.
       LOG.warn("Failed to submit async cache request {}: {}", request, e.getMessage());
       mPendingRequests.remove(blockId);
+
+
     }
-  }
+  }}
 
   /**
    * Caches the block via the local worker to read from UFS.

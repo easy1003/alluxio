@@ -117,8 +117,9 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
       @Override
       public GetCachePermissionTResponse call() throws AlluxioException {
         /* todo mBlockMaster.getCachePermission*/
+
         return new GetCachePermissionTResponse(
-          true
+           mBlockMaster.getCachePermission(blockId)
         );
       }
 
@@ -135,7 +136,9 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
     return RpcUtils.call(LOG, new RpcUtils.RpcCallable<CacheFailedDecreaseTResponse>() {
       @Override
       public CacheFailedDecreaseTResponse call() throws AlluxioException {
-        return new CacheFailedDecreaseTResponse();
+          /**modify**/
+          mBlockMaster.cacheFailedDecrease(blockId);
+          return new CacheFailedDecreaseTResponse();
       }
 
       @Override

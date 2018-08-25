@@ -508,16 +508,26 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
       }
     }
   }
-
+/** modify By wangdaopeng 20180826**/
   @Override
   public boolean getCachePermission(long blockId){
     /* todo */
+    int tmpcount=0;
+    boolean isCache =true;
+    if(mBlockCacheInfo.contains(blockId)) tmpcount = mBlockCacheInfo.get(blockId);
+    else mBlockCacheInfo.put(blockId,0);
+    if (tmpcount+1>2) isCache =false;
+    else {
+         mBlockCacheInfo.put(blockId,mBlockCacheInfo.get(blockId)+1);
+    }
     return true;
   }
 
   @Override
   public void cacheFailedDecrease(long blockId){
     /* todo */
+    if(mBlockCacheInfo.contains(blockId) && mBlockCacheInfo.get(blockId)>0)
+      mBlockCacheInfo.put(blockId,mBlockCacheInfo.get(blockId)-1);
   }
 
   @Override
