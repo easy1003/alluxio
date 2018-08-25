@@ -34,6 +34,10 @@ public final class BlockInfo implements Serializable {
   private long mLength;
   private ArrayList<BlockLocation> mLocations = new ArrayList<>();
 
+
+
+
+
   /**
    * Creates a new instance of {@link BlockInfo}.
    */
@@ -50,6 +54,8 @@ public final class BlockInfo implements Serializable {
     mLocations = new ArrayList<>();
     for (alluxio.thrift.BlockLocation location : blockInfo.getLocations()) {
       mLocations.add(new BlockLocation(location));
+
+
     }
   }
 

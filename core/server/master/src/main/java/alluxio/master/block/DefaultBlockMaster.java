@@ -38,10 +38,7 @@ import alluxio.proto.journal.Block.BlockContainerIdGeneratorEntry;
 import alluxio.proto.journal.Block.BlockInfoEntry;
 import alluxio.proto.journal.Block.DeleteBlockEntry;
 import alluxio.proto.journal.Journal.JournalEntry;
-import alluxio.thrift.BlockMasterClientService;
-import alluxio.thrift.BlockMasterWorkerService;
-import alluxio.thrift.Command;
-import alluxio.thrift.CommandType;
+import alluxio.thrift.*;
 import alluxio.util.CommonUtils;
 import alluxio.util.IdUtils;
 import alluxio.util.executor.ExecutorServiceFactories;
@@ -136,8 +133,11 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   /** Keeps track of blocks which are no longer in Alluxio storage. */
   private final ConcurrentHashSet<Long> mLostBlocks = new ConcurrentHashSet<>(64, 0.90f, 64);
 
+
+  /** modify**/
   private final ConcurrentHashMap<Long, Integer> mBlockCacheInfo =
       new ConcurrentHashMap<>(8192,0.90f,64);
+
 
   /** This state must be journaled. */
   @GuardedBy("itself")
@@ -512,7 +512,20 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   @Override
   public boolean getCachePermission(long blockId){
     /* todo */
-    return true;
+    boolean isCache =true;
+    List BlockInfolist = null;
+    try {
+      BlockInfolist = mBlockMaster.getBlockInfo(blockId).getLocations();
+    } catch (UnavailableException e) {
+      e.printStackTrace();
+    }
+    if(BlockInfolist.size()>2)
+    {
+      isCache =false;
+      LOG.info("isCache is false");
+    }
+
+    return new GetCachePermissionTResponse(isCache);
   }
 
   @Override

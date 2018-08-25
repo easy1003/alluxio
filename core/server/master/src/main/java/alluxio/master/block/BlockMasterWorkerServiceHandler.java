@@ -124,21 +124,7 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
       public GetCachePermissionTResponse call() throws AlluxioException {
         /* todo mBlockMaster.getCachePermission*/
 
-        boolean isCache =true;
-        List BlockInfolist = null;
-        try {
-          BlockInfolist = mBlockMaster.getBlockInfo(blockId).getLocations();
-        } catch (UnavailableException e) {
-          e.printStackTrace();
-        }
-        if(BlockInfolist.size()>2)
-        {
-          isCache =false;
-          LOG.info("isCache is false");
-        }
-        return new GetCachePermissionTResponse(
-               isCache
-        );
+         return mBlockMaster.getCachePermission(blockId)
       }
 
       @Override
