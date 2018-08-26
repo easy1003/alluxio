@@ -134,7 +134,8 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
   @Override
   public CacheFailedDecreaseTResponse cacheFailedDecrease(final long blockId,
       CacheFailedDecreaseTOptions options) throws AlluxioTException {
-    LOG.warn("pku-BlockMasterWorkerServiceHandler get cacheFailedDecrease from worker");
+    LOG.warn(String
+            .format("pku-BlockMasterWorkerServiceHandler get cacheFailedDecrease from worker"));
     return RpcUtils.call(LOG, new RpcUtils.RpcCallable<CacheFailedDecreaseTResponse>() {
       @Override
       public CacheFailedDecreaseTResponse call() throws AlluxioException {
