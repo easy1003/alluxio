@@ -516,7 +516,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
     synchronized (mBlockCacheInfo) {
       int tmpcount = 0;
       boolean isCache = true;
-      if (mBlockCacheInfo.contains(blockId)) {
+      if (mBlockCacheInfo.containsKey(blockId)) {
         tmpcount = mBlockCacheInfo.get(blockId);
         LOG.warn("pku-before next cache,the blockid:%s count is %s",
                 String.valueOf(blockId), String.valueOf(tmpcount));
