@@ -137,7 +137,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   private final ConcurrentHashSet<Long> mLostBlocks = new ConcurrentHashSet<>(64, 0.90f, 64);
 
   private final ConcurrentHashMap<Long, Integer> mBlockCacheInfo =
-      new ConcurrentHashMap<>(8192,0.90f,64);
+      new ConcurrentHashMap<>(8192, 0.90f, 64);
 
   /** This state must be journaled. */
   @GuardedBy("itself")
@@ -508,26 +508,33 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
       }
     }
   }
-/** modify By wangdaopeng 20180826**/
+
   @Override
-  public boolean getCachePermission(long blockId){
-    /* todo */
-    int tmpcount=0;
-    boolean isCache =true;
-    if(mBlockCacheInfo.contains(blockId)) tmpcount = mBlockCacheInfo.get(blockId);
-    else mBlockCacheInfo.put(blockId,0);
-    if (tmpcount+1>2) isCache =false;
-    else {
-         mBlockCacheInfo.put(blockId,mBlockCacheInfo.get(blockId)+1);
+  public boolean getCachePermission(long blockId) {
+    synchronized (mBlockCacheInfo) {
+      int tmpcount = 0;
+      boolean isCache = true;
+      if (mBlockCacheInfo.contains(blockId)) {
+        tmpcount = mBlockCacheInfo.get(blockId);
+      } else {
+        mBlockCacheInfo.put(blockId, 0);
+      }
+      if (tmpcount + 1 > 2) {
+        isCache = false;
+      } else {
+        mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) + 1);
+      }
+      return isCache;
     }
-    return true;
   }
 
   @Override
-  public void cacheFailedDecrease(long blockId){
-    /* todo */
-    if(mBlockCacheInfo.contains(blockId) && mBlockCacheInfo.get(blockId)>0)
-      mBlockCacheInfo.put(blockId,mBlockCacheInfo.get(blockId)-1);
+  public void cacheFailedDecrease(long blockId) {
+    synchronized (mBlockCacheInfo) {
+      if (mBlockCacheInfo.contains(blockId) && mBlockCacheInfo.get(blockId) > 0) {
+        mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) - 1);
+      }
+    }
   }
 
   @Override

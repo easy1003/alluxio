@@ -122,9 +122,9 @@ public class AsyncCacheRequestManager {
       LOG.warn("Failed to submit async cache request {}: {}", request, e.getMessage());
       mPendingRequests.remove(blockId);
 
-
     }
-  }}
+   }
+  }
 
   /**
    * Caches the block via the local worker to read from UFS.

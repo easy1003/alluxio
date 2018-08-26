@@ -112,7 +112,7 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
 
   @Override
   public GetCachePermissionTResponse getCachePermission(final long blockId,
-      GetCachePermissionTOptions options) throws AlluxioTException{
+      GetCachePermissionTOptions options) throws AlluxioTException {
     return RpcUtils.call(LOG, new RpcUtils.RpcCallable<GetCachePermissionTResponse>() {
       @Override
       public GetCachePermissionTResponse call() throws AlluxioException {
@@ -124,15 +124,15 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
       }
 
       @Override
-      public String toString(){
-        return String.format("getCachePermission: blockId=%s, options=%s",blockId, options);
+      public String toString() {
+        return String.format("getCachePermission: blockId=%s, options=%s", blockId, options);
       }
     });
   }
 
   @Override
   public CacheFailedDecreaseTResponse cacheFailedDecrease(final long blockId,
-      CacheFailedDecreaseTOptions options) throws AlluxioTException{
+      CacheFailedDecreaseTOptions options) throws AlluxioTException {
     return RpcUtils.call(LOG, new RpcUtils.RpcCallable<CacheFailedDecreaseTResponse>() {
       @Override
       public CacheFailedDecreaseTResponse call() throws AlluxioException {
@@ -142,8 +142,8 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
       }
 
       @Override
-      public String toString(){
-        return String.format("cacheFailedDecrease: blockId=%s, options=%s",blockId, options);
+      public String toString() {
+        return String.format("cacheFailedDecrease: blockId=%s, options=%s", blockId, options);
       }
     });
   }
