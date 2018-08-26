@@ -113,6 +113,7 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
   @Override
   public GetCachePermissionTResponse getCachePermission(final long blockId,
       GetCachePermissionTOptions options) throws AlluxioTException {
+    LOG.warn("pku-BlockMasterWorkerServiceHandler get cacheg permission from worker");
     return RpcUtils.call(LOG, new RpcUtils.RpcCallable<GetCachePermissionTResponse>() {
       @Override
       public GetCachePermissionTResponse call() throws AlluxioException {
@@ -133,6 +134,7 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
   @Override
   public CacheFailedDecreaseTResponse cacheFailedDecrease(final long blockId,
       CacheFailedDecreaseTOptions options) throws AlluxioTException {
+    LOG.warn("pku-BlockMasterWorkerServiceHandler get cacheFailedDecrease from worker");
     return RpcUtils.call(LOG, new RpcUtils.RpcCallable<CacheFailedDecreaseTResponse>() {
       @Override
       public CacheFailedDecreaseTResponse call() throws AlluxioException {

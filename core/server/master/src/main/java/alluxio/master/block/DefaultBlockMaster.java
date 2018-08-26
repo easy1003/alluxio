@@ -511,18 +511,26 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   @Override
   public boolean getCachePermission(long blockId) {
+    LOG.warn("pku-DefaultgetCachePermission");
+    LOG.warn("the count map countains %d elements", mBlockCacheInfo.keySet().size());
     synchronized (mBlockCacheInfo) {
       int tmpcount = 0;
       boolean isCache = true;
       if (mBlockCacheInfo.contains(blockId)) {
         tmpcount = mBlockCacheInfo.get(blockId);
+        LOG.warn("pku-before next cache,the blockid:%s count is %s",
+                String.valueOf(blockId), String.valueOf(tmpcount));
       } else {
         mBlockCacheInfo.put(blockId, 0);
       }
       if (tmpcount + 1 > 2) {
         isCache = false;
+        LOG.warn("pku-DefaultBlockMaster-getcachePermission-we dont't cache the block %s",
+                String.valueOf(blockId));
       } else {
         mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) + 1);
+        LOG.warn("pku-DefaultBlockMaster-getcachePermissionwe cache the block %s",
+                String.valueOf(blockId));
       }
       return isCache;
     }
@@ -533,6 +541,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
     synchronized (mBlockCacheInfo) {
       if (mBlockCacheInfo.contains(blockId) && mBlockCacheInfo.get(blockId) > 0) {
         mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) - 1);
+        LOG.warn("pku-DefaultBlockMaster-cacheFailedDecrease %s", String.valueOf(blockId));
       }
     }
   }
