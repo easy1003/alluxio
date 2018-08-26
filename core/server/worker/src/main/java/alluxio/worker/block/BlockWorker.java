@@ -392,9 +392,22 @@ public interface BlockWorker extends Worker, SessionCleanable {
       throws BlockAlreadyExistsException, BlockDoesNotExistException, IOException,
       WorkerOutOfSpaceException;
 
+  /**
+   *
+   * @param sessionId the session ID
+   * @param blockId the block ID
+   * @throws Exception the the worker does not have enough space to commit the block
+   * @return  whether to cache
+   */
   boolean getCachePermission(long sessionId, long blockId)
           throws Exception;
 
+  /**
+   *
+   * @param sessionId the session ID
+   * @param blockId the block ID
+   * @throws Exception the the worker does not have enough space to commit the block
+   */
   void cacheFailedDecrease(long sessionId, long blockId)
           throws Exception;
 }

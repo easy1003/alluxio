@@ -321,7 +321,7 @@ public final class DefaultBlockWorker extends AbstractWorker implements BlockWor
   }
 
   @Override
-  public boolean getCachePermission(long sessionId, long blockId) throws Exception{
+  public boolean getCachePermission(long sessionId, long blockId) throws Exception {
     BlockMasterClient blockMasterClient = mBlockMasterClientPool.acquire();
     boolean isCache;
     try {
@@ -336,11 +336,11 @@ public final class DefaultBlockWorker extends AbstractWorker implements BlockWor
   }
 
   @Override
-  public void cacheFailedDecrease(long sessionId, long blockId) throws Exception{
+  public void cacheFailedDecrease(long sessionId, long blockId) throws Exception {
     BlockMasterClient blockMasterClient = mBlockMasterClientPool.acquire();
     try {
       blockMasterClient.cacheFailedDecrease(blockId);
-    } catch (Exception e){
+    } catch (Exception e) {
       throw e;
     } finally {
       mBlockMasterClientPool.release(blockMasterClient);

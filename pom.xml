@@ -953,11 +953,11 @@
           <artifactId>exec-maven-plugin</artifactId>
           <version>1.4.0</version>
         </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
+        <!--<plugin>-->
+          <!--<groupId>org.codehaus.mojo</groupId>-->
+          <!--<artifactId>findbugs-maven-plugin</artifactId>-->
+          <!--<version>3.0.2</version>-->
+        <!--</plugin>-->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>templating-maven-plugin</artifactId>
@@ -1041,31 +1041,31 @@
       </plugin>
 
       <!-- FindBugs -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <configuration>
-          <excludeFilterFile>${findbugs.path}/findbugs-exclude.xml</excludeFilterFile>
-          <!--
-              Enables analysis which takes more memory but finds more bugs.
-              If you run out of memory, changes the value of the effort element
-              to 'Low'.
-            -->
-          <effort>Max</effort>
-          <failOnError>true</failOnError>
-          <threshold>Low</threshold>
-          <findbugsXmlOutput>true</findbugsXmlOutput>
-          <xmlOutput>true</xmlOutput>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.codehaus.mojo</groupId>-->
+        <!--<artifactId>findbugs-maven-plugin</artifactId>-->
+        <!--<configuration>-->
+          <!--<excludeFilterFile>${findbugs.path}/findbugs-exclude.xml</excludeFilterFile>-->
+          <!--&lt;!&ndash;-->
+              <!--Enables analysis which takes more memory but finds more bugs.-->
+              <!--If you run out of memory, changes the value of the effort element-->
+              <!--to 'Low'.-->
+            <!--&ndash;&gt;-->
+          <!--<effort>Max</effort>-->
+          <!--<failOnError>true</failOnError>-->
+          <!--<threshold>Low</threshold>-->
+          <!--<findbugsXmlOutput>true</findbugsXmlOutput>-->
+          <!--<xmlOutput>true</xmlOutput>-->
+        <!--</configuration>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<phase>compile</phase>-->
+            <!--<goals>-->
+              <!--<goal>check</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
 
       <!-- Checkstyle -->
       <plugin>
