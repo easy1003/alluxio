@@ -75,8 +75,8 @@ public class AsyncCacheRequestManager {
     }
 
     if (mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID, blockId)) {
-      LOG.warn("pku-AsyncCacheRequestManager-getblock-%s" + String.valueOf(blockId));
       try {
+        LOG.warn("{} start to request cache", blockId);
         mAsyncCacheExecutor.submit(() -> {
           try {
             // Check if the block has already been cached on this worker
@@ -107,8 +107,6 @@ public class AsyncCacheRequestManager {
             LOG.warn("Failed to complete async cache request {} from UFS", request, e.getMessage());
             try {
               mBlockWorker.cacheFailedDecrease(Sessions.ACCESS_BLOCK_SESSION_ID, blockId);
-              LOG.warn("pku-BlockMasterWorkerServiceHandler-cacheFailedDecrease-%s"
-                      + String.valueOf(blockId));
             } catch (Exception e1) {
               e1.printStackTrace();
             }
