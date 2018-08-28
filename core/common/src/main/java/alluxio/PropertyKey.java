@@ -346,7 +346,7 @@ public final class PropertyKey implements Comparable<PropertyKey> {
   public static final PropertyKey UNDERFS_OBJECT_STORE_SERVICE_THREADS =
       new Builder(Name.UNDERFS_OBJECT_STORE_SERVICE_THREADS)
           .setDefaultValue(20)
-          .setDescription("The number of threads in executor pool for parallel object store "
+          .setDescription("The number of threads in executor pool for paralluioallel object store "
               + "UFS operations.")
           .build();
   public static final PropertyKey UNDERFS_OBJECT_STORE_MOUNT_SHARED_PUBLICLY =
@@ -1895,6 +1895,13 @@ public final class PropertyKey implements Comparable<PropertyKey> {
               + "read/write data without going through Alluxio workers if the data is local "
               + "is enabled if set to true.")
           .build();
+  public static final PropertyKey USER_CACHE_LIMIT_NUMBER =
+          new Builder(Name.USER_CACHE_LIMIT_NUMBER)
+                  .setDefaultValue(3)
+                  .setDescription("alluxio.user.cache.limit.number is set to limit cache copy,"
+                          + "alluxio.user.cache.limit.number is default by 3, user can configure"
+                          + "the cache copy limit by their need.")
+                  .build();
 
   //
   // FUSE integration related properties
@@ -2568,6 +2575,7 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String USER_UFS_BLOCK_READ_CONCURRENCY_MAX =
         "alluxio.user.ufs.block.read.concurrency.max";
     public static final String USER_SHORT_CIRCUIT_ENABLED = "alluxio.user.short.circuit.enabled";
+    public static final String USER_CACHE_LIMIT_NUMBER = "alluxio.user.cache.limit.number";
 
     //
     // FUSE integration related properties

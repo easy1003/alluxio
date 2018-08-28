@@ -511,29 +511,31 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   @Override
   public boolean getCachePermission(long blockId) {
-    LOG.warn("the count map countains {} elements ",
+    LOG.info("the count map countains {} elements ",
             mBlockCacheInfo.keySet().size());
-    synchronized (mBlockCacheInfo) {
-      int tmpcount = 0;
-      boolean isCache = true;
-      if (mBlockCacheInfo.containsKey(blockId)) {
-        tmpcount = mBlockCacheInfo.get(blockId);
-        LOG.warn("pku-before next cache,the blockid:{} count is {}" ,
-                blockId, tmpcount);
-      } else {
+    int tmpcount = 0;
+    boolean isCache = true;
+    if (mBlockCacheInfo.containsKey(blockId)) {
+      tmpcount = mBlockCacheInfo.get(blockId);
+      LOG.info("pku-before next cache,the blockid:{} count is {}" ,
+              blockId, tmpcount);
+    } else {
         mBlockCacheInfo.put(blockId, 0);
-      }
-      if (tmpcount + 1 > 2) {
-        isCache = false;
-        LOG.warn("pku-DefaultBlockMaster-getcachePermission-we dont't cache the block {}",
-                blockId);
-      } else {
-        mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) + 1);
-        LOG.warn("pku-DefaultBlockMaster-getcachePermissionwe cache the block {}",
-                blockId);
-      }
-      return isCache;
     }
+    int cacheLimit = Configuration
+            .getInt(PropertyKey.USER_CACHE_LIMIT_NUMBER);
+    LOG.info("alluxio.user.cache.limit.number is {}.",
+            cacheLimit);
+    if (tmpcount + 1 > cacheLimit) {
+      isCache = false;
+      LOG.info("pku-DefaultBlockMaster-getcachePermission-we dont't cache the block {}",
+              blockId);
+    } else {
+      mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) + 1);
+      LOG.info("pku-DefaultBlockMaster-getcachePermissionwe cache the block {}",
+              blockId);
+    }
+    return isCache;
   }
 
   @Override
@@ -541,7 +543,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
     synchronized (mBlockCacheInfo) {
       if (mBlockCacheInfo.containsKey(blockId) && mBlockCacheInfo.get(blockId) > 0) {
         mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) - 1);
-        LOG.warn("pku-DefaultBlockMaster-cacheFailedDecrease {}",
+        LOG.info("pku-DefaultBlockMaster-cacheFailedDecrease {}",
                 blockId);
       }
     }
