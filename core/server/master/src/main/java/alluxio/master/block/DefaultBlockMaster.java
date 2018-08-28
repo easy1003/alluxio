@@ -513,29 +513,32 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   public boolean getCachePermission(long blockId) {
     LOG.info("the count map countains {} elements ",
             mBlockCacheInfo.keySet().size());
-    int tmpcount = 0;
-    boolean isCache = true;
-    if (mBlockCacheInfo.containsKey(blockId)) {
-      tmpcount = mBlockCacheInfo.get(blockId);
-      LOG.info("pku-before next cache,the blockid:{} count is {}" ,
-              blockId, tmpcount);
-    } else {
-      mBlockCacheInfo.put(blockId, 0);
+    synchronized (mBlockCacheInfo) {
+      int tmpcount = 0;
+      boolean isCache = true;
+      if (mBlockCacheInfo.containsKey(blockId)) {
+        tmpcount = mBlockCacheInfo.get(blockId);
+        LOG.info("pku-before next cache,the blockid:{} count is {}" ,
+                blockId, tmpcount);
+      } else {
+        mBlockCacheInfo.put(blockId, 0);
+      }
+      int cacheLimit = Configuration
+              .getInt(PropertyKey.USER_CACHE_LIMIT_NUMBER);
+      LOG.info("alluxio.user.cache.limit.number is {}.",
+              cacheLimit);
+      if (tmpcount + 1 > cacheLimit) {
+        isCache = false;
+        LOG.info("pku-DefaultBlockMaster-getcachePermission-we dont't cache the block {}",
+                blockId);
+      } else {
+        mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) + 1);
+        LOG.info("pku-DefaultBlockMaster-getcachePermissionwe cache the block {}",
+                blockId);
+      }
+      return isCache;
     }
-    int cacheLimit = Configuration
-            .getInt(PropertyKey.USER_CACHE_LIMIT_NUMBER);
-    LOG.info("alluxio.user.cache.limit.number is {}.",
-            cacheLimit);
-    if (tmpcount + 1 > cacheLimit) {
-      isCache = false;
-      LOG.info("pku-DefaultBlockMaster-getcachePermission-we dont't cache the block {}",
-              blockId);
-    } else {
-      mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) + 1);
-      LOG.info("pku-DefaultBlockMaster-getcachePermissionwe cache the block {}",
-              blockId);
-    }
-    return isCache;
+
   }
 
   @Override
