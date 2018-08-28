@@ -520,7 +520,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
       LOG.info("pku-before next cache,the blockid:{} count is {}" ,
               blockId, tmpcount);
     } else {
-        mBlockCacheInfo.put(blockId, 0);
+      mBlockCacheInfo.put(blockId, 0);
     }
     int cacheLimit = Configuration
             .getInt(PropertyKey.USER_CACHE_LIMIT_NUMBER);
