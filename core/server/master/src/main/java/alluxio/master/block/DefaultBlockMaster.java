@@ -529,14 +529,15 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
               cacheLimit);
       if (tmpcount + 1 > cacheLimit) {
         isCache = false;
-        LOG.info("pku-DefaultBlockMaster-getcachePermission-we dont't cache the block {}",
-                blockId);
+        LOG.info("pku-DefaultBlockMaster-getcachePermission-we dont't cache the block {} count is {}",
+                blockId, tmpcount);
+        return isCache;
       } else {
         mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) + 1);
-        LOG.info("pku-DefaultBlockMaster-getcachePermissionwe cache the block {}",
-                blockId);
+        LOG.info("pku-DefaultBlockMaster-getcachePermissionwe cache the block {} count id {}",
+                blockId, mBlockCacheInfo.get(blockId));
+        return true;
       }
-      return isCache;
     }
 
   }
