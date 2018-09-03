@@ -73,7 +73,8 @@ public class AsyncCacheRequestManager {
       // This block is already planned.
       return;
     }
-
+    LOG.info("try to getCachePermission, blockId {}",
+            blockId);
     if (mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID, blockId)) {
       try {
         LOG.warn("{} start to request cache", blockId);

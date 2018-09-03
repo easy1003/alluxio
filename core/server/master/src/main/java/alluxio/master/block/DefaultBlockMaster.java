@@ -74,6 +74,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import javax.annotation.concurrent.GuardedBy;
@@ -136,7 +137,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   /** Keeps track of blocks which are no longer in Alluxio storage. */
   private final ConcurrentHashSet<Long> mLostBlocks = new ConcurrentHashSet<>(64, 0.90f, 64);
 
-  private final ConcurrentHashMap<Long, Integer> mBlockCacheInfo =
+  private final ConcurrentHashMap<Long, AtomicInteger> mBlockCacheInfo =
       new ConcurrentHashMap<>(8192, 0.90f, 64);
 
   /** This state must be journaled. */
@@ -380,6 +381,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
             }
           }
         }
+        clearCacheBlockInfoByID(blockId);
       }
     }
   }
@@ -513,45 +515,52 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   public boolean getCachePermission(long blockId) {
     LOG.info("the count map countains {} elements ",
             mBlockCacheInfo.keySet().size());
-    synchronized (mBlockCacheInfo) {
-      int tmpcount = 0;
-      boolean isCache = true;
-      if (mBlockCacheInfo.containsKey(blockId)) {
-        tmpcount = mBlockCacheInfo.get(blockId);
-        LOG.info("pku-before next cache,the blockid:{} count is {}" ,
-                blockId, tmpcount);
+    int cacheLimit = Configuration
+            .getInt(PropertyKey.USER_CACHE_LIMIT_NUMBER);
+    LOG.info("alluxio.user.cache.limit.number is {}.",
+            cacheLimit);
+    AtomicInteger newCount = new AtomicInteger(0);
+    AtomicInteger count = mBlockCacheInfo.putIfAbsent(blockId, newCount);
+    if (count == null) {
+      LOG.info("put if absent, blockId {}",
+              blockId);
+      return true;
+    }
+    synchronized (count) {
+      int tmpCount = count.get();
+      if (tmpCount + 1 > cacheLimit) {
+        LOG.info("dont't cache the blockId {}, count is {}",
+                blockId, tmpCount);
+        return false;
       } else {
-        mBlockCacheInfo.put(blockId, 0);
-      }
-      int cacheLimit = Configuration
-              .getInt(PropertyKey.USER_CACHE_LIMIT_NUMBER);
-      LOG.info("alluxio.user.cache.limit.number is {}.",
-              cacheLimit);
-      if (tmpcount + 1 > cacheLimit) {
-        isCache = false;
-        LOG.info("dont't cache the block {} count is {}",
-                blockId, tmpcount);
-        return isCache;
-      } else {
-        mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) + 1);
-        LOG.info("pku-DefaultBlockMaster-getcachePermissionwe cache the block {} count id {}",
-                blockId, mBlockCacheInfo.get(blockId));
+        count.incrementAndGet();
+        LOG.info("getCachePermission, cache the blockId {}, count is {}",
+                blockId, count.get());
         return true;
       }
     }
-
   }
 
   @Override
   public void cacheFailedDecrease(long blockId) {
-    synchronized (mBlockCacheInfo) {
-      if (mBlockCacheInfo.containsKey(blockId) && mBlockCacheInfo.get(blockId) > 0) {
-        mBlockCacheInfo.put(blockId, mBlockCacheInfo.get(blockId) - 1);
-        LOG.info("pku-DefaultBlockMaster-cacheFailedDecrease {}",
-                blockId);
-      }
+    AtomicInteger count = mBlockCacheInfo.get(blockId);
+    synchronized (count) {
+      count.decrementAndGet();
+      LOG.info("cacheFailedDecrease, blockId{}",
+              blockId);
     }
   }
+
+  @Override
+  public void clearCacheBlockInfoByID(long blockId) {
+    AtomicInteger count = mBlockCacheInfo.get(blockId);
+    synchronized (count) {
+      count.set(0);
+      LOG.info("clearCacheBlockInfoByID, blockId{}",
+              blockId);
+    }
+  }
+
 
   @Override
   public void commitBlockInUFS(long blockId, long length) throws UnavailableException {
@@ -750,6 +759,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
           mLostBlocks.add(removedBlockId);
         }
       }
+      clearCacheBlockInfoByID(removedBlockId);
     }
   }
 
