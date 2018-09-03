@@ -561,7 +561,6 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
     }
   }
 
-
   @Override
   public void commitBlockInUFS(long blockId, long length) throws UnavailableException {
     LOG.debug("Commit block in ufs. blockId: {}, length: {}", blockId, length);
