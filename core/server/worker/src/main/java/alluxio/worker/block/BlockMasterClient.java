@@ -118,7 +118,8 @@ public final class BlockMasterClient extends AbstractMasterClient {
    * @param blockId the block id being committed
    * @param workerHostname the worker hostname
    */
-  public synchronized void cacheFailedDecrease(final long blockId, final String workerHostname) throws Exception {
+  public synchronized void cacheFailedDecrease(final long blockId,
+      final String workerHostname) throws Exception {
     retryRPC(new RpcCallable<Void>() {
       @Override
       public Void call() throws TException {
