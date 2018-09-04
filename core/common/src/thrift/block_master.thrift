@@ -146,10 +146,12 @@ service BlockMasterWorkerService extends common.AlluxioService {
 
   GetCachePermissionTResponse getCachePermission(
     /** the id of the block */ 1: i64 blockId,
-    /** the method options */ 2: GetCachePermissionTOptions options,
+    /** the hostname of the worker */ 2: string workerHostname,
+    /** the method options */ 3: GetCachePermissionTOptions options,
     )
   CacheFailedDecreaseTResponse cacheFailedDecrease(
      /** the id of the block */ 1: i64 blockId,
-      /** the method options */ 2: CacheFailedDecreaseTOptions options,
+     /** the hostname of the worker */ 2: string workerHostname,
+      /** the method options */ 3: CacheFailedDecreaseTOptions options,
     )
 }

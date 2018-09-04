@@ -512,7 +512,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   }
 
   @Override
-  public boolean getCachePermission(long blockId) {
+  public boolean getCachePermission(long blockId, String workerHostname) {
     LOG.info("the count map countains {} elements ",
             mBlockCacheInfo.keySet().size());
     int cacheLimit = Configuration
@@ -542,7 +542,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   }
 
   @Override
-  public void cacheFailedDecrease(long blockId) {
+  public void cacheFailedDecrease(long blockId, String workerHostname) {
     AtomicInteger count = mBlockCacheInfo.get(blockId);
     synchronized (count) {
       count.decrementAndGet();

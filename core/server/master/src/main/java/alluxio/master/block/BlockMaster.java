@@ -178,17 +178,19 @@ public interface BlockMaster extends Master, ContainerIdGenerable {
   /**
    * getCachePermission.
    *
-   * @param blockId the ids of the lost blocks
+   * @param blockId the ids of the block
+   * @param workerHostname the worker hostname
    * @return whether to cache the block
    */
-  boolean getCachePermission(long blockId) throws BlockInfoException;
+  boolean getCachePermission(long blockId, String workerHostname) throws BlockInfoException;
 
   /**
    * cacheFailedDecrease by blockID.
    *
-   * @param blockId the ids of the lost blocks
+   * @param blockId the ids of the block
+   * @param workerHostname the worker hostname
    */
-  void cacheFailedDecrease(long blockId);
+  void cacheFailedDecrease(long blockId, String workerHostname);
 
   /**
    * clearCacheBlockInfoByID.

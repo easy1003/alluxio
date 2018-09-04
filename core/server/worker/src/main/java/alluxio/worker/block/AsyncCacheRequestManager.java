@@ -75,7 +75,7 @@ public class AsyncCacheRequestManager {
     }
     LOG.info("try to getCachePermission, blockId {}",
             blockId);
-    if (mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID, blockId)) {
+    if (mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID, blockId, mLocalWorkerHostname)) {
       try {
         LOG.warn("{} start to request cache", blockId);
         mAsyncCacheExecutor.submit(() -> {
@@ -107,7 +107,7 @@ public class AsyncCacheRequestManager {
           } catch (Exception e) {
             LOG.warn("Failed to complete async cache request {} from UFS", request, e.getMessage());
             try {
-              mBlockWorker.cacheFailedDecrease(Sessions.ACCESS_BLOCK_SESSION_ID, blockId);
+              mBlockWorker.cacheFailedDecrease(Sessions.ACCESS_BLOCK_SESSION_ID, blockId, mLocalWorkerHostname);
             } catch (Exception e1) {
               e1.printStackTrace();
             }

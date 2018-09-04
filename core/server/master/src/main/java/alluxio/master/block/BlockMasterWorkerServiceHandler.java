@@ -112,6 +112,7 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
 
   @Override
   public GetCachePermissionTResponse getCachePermission(final long blockId,
+      final String workerHostname,
       GetCachePermissionTOptions options) throws AlluxioTException {
     LOG.warn("pku-BlockMasterWorkerServiceHandler get cacheg permission from worker");
     return RpcUtils.call(LOG, new RpcUtils.RpcCallable<GetCachePermissionTResponse>() {
@@ -120,19 +121,21 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
         /* todo mBlockMaster.getCachePermission*/
 
         return new GetCachePermissionTResponse(
-           mBlockMaster.getCachePermission(blockId)
+           mBlockMaster.getCachePermission(blockId, workerHostname)
         );
       }
 
       @Override
       public String toString() {
-        return String.format("getCachePermission: blockId=%s, options=%s", blockId, options);
+        return String.format("getCachePermission: blockId=%s, workerHostname=%s," +
+                "options=%s", blockId, workerHostname, options);
       }
     });
   }
 
   @Override
   public CacheFailedDecreaseTResponse cacheFailedDecrease(final long blockId,
+      final String workerHostname,
       CacheFailedDecreaseTOptions options) throws AlluxioTException {
     LOG.warn(String
             .format("pku-BlockMasterWorkerServiceHandler get cacheFailedDecrease from worker"));
@@ -140,13 +143,14 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
       @Override
       public CacheFailedDecreaseTResponse call() throws AlluxioException {
           /**modify**/
-          mBlockMaster.cacheFailedDecrease(blockId);
+          mBlockMaster.cacheFailedDecrease(blockId, workerHostname);
           return new CacheFailedDecreaseTResponse();
       }
 
       @Override
       public String toString() {
-        return String.format("cacheFailedDecrease: blockId=%s, options=%s", blockId, options);
+        return String.format("cacheFailedDecrease: blockId=%s, workerHostname=%s," +
+                " options=%s", blockId, workerHostname,options);
       }
     });
   }

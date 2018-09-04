@@ -100,9 +100,9 @@ public class BlockMasterWorkerService {
      */
     public RegisterWorkerTResponse registerWorker(long workerId, List<String> storageTiers, Map<String,Long> totalBytesOnTiers, Map<String,Long> usedBytesOnTiers, Map<String,List<Long>> currentBlocksOnTiers, RegisterWorkerTOptions options) throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException;
 
-    public GetCachePermissionTResponse getCachePermission(long blockId, GetCachePermissionTOptions options) throws org.apache.thrift.TException;
+    public GetCachePermissionTResponse getCachePermission(long blockId, String workerHostname, GetCachePermissionTOptions options) throws org.apache.thrift.TException;
 
-    public CacheFailedDecreaseTResponse cacheFailedDecrease(long blockId, CacheFailedDecreaseTOptions options) throws org.apache.thrift.TException;
+    public CacheFailedDecreaseTResponse cacheFailedDecrease(long blockId, String workerHostname, CacheFailedDecreaseTOptions options) throws org.apache.thrift.TException;
 
   }
 
@@ -116,9 +116,9 @@ public class BlockMasterWorkerService {
 
     public void registerWorker(long workerId, List<String> storageTiers, Map<String,Long> totalBytesOnTiers, Map<String,Long> usedBytesOnTiers, Map<String,List<Long>> currentBlocksOnTiers, RegisterWorkerTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getCachePermission(long blockId, GetCachePermissionTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getCachePermission(long blockId, String workerHostname, GetCachePermissionTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void cacheFailedDecrease(long blockId, CacheFailedDecreaseTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void cacheFailedDecrease(long blockId, String workerHostname, CacheFailedDecreaseTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -261,16 +261,17 @@ public class BlockMasterWorkerService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "registerWorker failed: unknown result");
     }
 
-    public GetCachePermissionTResponse getCachePermission(long blockId, GetCachePermissionTOptions options) throws org.apache.thrift.TException
+    public GetCachePermissionTResponse getCachePermission(long blockId, String workerHostname, GetCachePermissionTOptions options) throws org.apache.thrift.TException
     {
-      send_getCachePermission(blockId, options);
+      send_getCachePermission(blockId, workerHostname, options);
       return recv_getCachePermission();
     }
 
-    public void send_getCachePermission(long blockId, GetCachePermissionTOptions options) throws org.apache.thrift.TException
+    public void send_getCachePermission(long blockId, String workerHostname, GetCachePermissionTOptions options) throws org.apache.thrift.TException
     {
       getCachePermission_args args = new getCachePermission_args();
       args.setBlockId(blockId);
+      args.setWorkerHostname(workerHostname);
       args.setOptions(options);
       sendBase("getCachePermission", args);
     }
@@ -285,16 +286,17 @@ public class BlockMasterWorkerService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getCachePermission failed: unknown result");
     }
 
-    public CacheFailedDecreaseTResponse cacheFailedDecrease(long blockId, CacheFailedDecreaseTOptions options) throws org.apache.thrift.TException
+    public CacheFailedDecreaseTResponse cacheFailedDecrease(long blockId, String workerHostname, CacheFailedDecreaseTOptions options) throws org.apache.thrift.TException
     {
-      send_cacheFailedDecrease(blockId, options);
+      send_cacheFailedDecrease(blockId, workerHostname, options);
       return recv_cacheFailedDecrease();
     }
 
-    public void send_cacheFailedDecrease(long blockId, CacheFailedDecreaseTOptions options) throws org.apache.thrift.TException
+    public void send_cacheFailedDecrease(long blockId, String workerHostname, CacheFailedDecreaseTOptions options) throws org.apache.thrift.TException
     {
       cacheFailedDecrease_args args = new cacheFailedDecrease_args();
       args.setBlockId(blockId);
+      args.setWorkerHostname(workerHostname);
       args.setOptions(options);
       sendBase("cacheFailedDecrease", args);
     }
@@ -500,19 +502,21 @@ public class BlockMasterWorkerService {
       }
     }
 
-    public void getCachePermission(long blockId, GetCachePermissionTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getCachePermission(long blockId, String workerHostname, GetCachePermissionTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getCachePermission_call method_call = new getCachePermission_call(blockId, options, resultHandler, this, ___protocolFactory, ___transport);
+      getCachePermission_call method_call = new getCachePermission_call(blockId, workerHostname, options, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class getCachePermission_call extends org.apache.thrift.async.TAsyncMethodCall {
       private long blockId;
+      private String workerHostname;
       private GetCachePermissionTOptions options;
-      public getCachePermission_call(long blockId, GetCachePermissionTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public getCachePermission_call(long blockId, String workerHostname, GetCachePermissionTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.blockId = blockId;
+        this.workerHostname = workerHostname;
         this.options = options;
       }
 
@@ -520,6 +524,7 @@ public class BlockMasterWorkerService {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getCachePermission", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getCachePermission_args args = new getCachePermission_args();
         args.setBlockId(blockId);
+        args.setWorkerHostname(workerHostname);
         args.setOptions(options);
         args.write(prot);
         prot.writeMessageEnd();
@@ -535,19 +540,21 @@ public class BlockMasterWorkerService {
       }
     }
 
-    public void cacheFailedDecrease(long blockId, CacheFailedDecreaseTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void cacheFailedDecrease(long blockId, String workerHostname, CacheFailedDecreaseTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      cacheFailedDecrease_call method_call = new cacheFailedDecrease_call(blockId, options, resultHandler, this, ___protocolFactory, ___transport);
+      cacheFailedDecrease_call method_call = new cacheFailedDecrease_call(blockId, workerHostname, options, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class cacheFailedDecrease_call extends org.apache.thrift.async.TAsyncMethodCall {
       private long blockId;
+      private String workerHostname;
       private CacheFailedDecreaseTOptions options;
-      public cacheFailedDecrease_call(long blockId, CacheFailedDecreaseTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public cacheFailedDecrease_call(long blockId, String workerHostname, CacheFailedDecreaseTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.blockId = blockId;
+        this.workerHostname = workerHostname;
         this.options = options;
       }
 
@@ -555,6 +562,7 @@ public class BlockMasterWorkerService {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("cacheFailedDecrease", org.apache.thrift.protocol.TMessageType.CALL, 0));
         cacheFailedDecrease_args args = new cacheFailedDecrease_args();
         args.setBlockId(blockId);
+        args.setWorkerHostname(workerHostname);
         args.setOptions(options);
         args.write(prot);
         prot.writeMessageEnd();
@@ -703,7 +711,7 @@ public class BlockMasterWorkerService {
 
       public getCachePermission_result getResult(I iface, getCachePermission_args args) throws org.apache.thrift.TException {
         getCachePermission_result result = new getCachePermission_result();
-        result.success = iface.getCachePermission(args.blockId, args.options);
+        result.success = iface.getCachePermission(args.blockId, args.workerHostname, args.options);
         return result;
       }
     }
@@ -723,7 +731,7 @@ public class BlockMasterWorkerService {
 
       public cacheFailedDecrease_result getResult(I iface, cacheFailedDecrease_args args) throws org.apache.thrift.TException {
         cacheFailedDecrease_result result = new cacheFailedDecrease_result();
-        result.success = iface.cacheFailedDecrease(args.blockId, args.options);
+        result.success = iface.cacheFailedDecrease(args.blockId, args.workerHostname, args.options);
         return result;
       }
     }
@@ -1025,7 +1033,7 @@ public class BlockMasterWorkerService {
       }
 
       public void start(I iface, getCachePermission_args args, org.apache.thrift.async.AsyncMethodCallback<GetCachePermissionTResponse> resultHandler) throws TException {
-        iface.getCachePermission(args.blockId, args.options,resultHandler);
+        iface.getCachePermission(args.blockId, args.workerHostname, args.options,resultHandler);
       }
     }
 
@@ -1076,7 +1084,7 @@ public class BlockMasterWorkerService {
       }
 
       public void start(I iface, cacheFailedDecrease_args args, org.apache.thrift.async.AsyncMethodCallback<CacheFailedDecreaseTResponse> resultHandler) throws TException {
-        iface.cacheFailedDecrease(args.blockId, args.options,resultHandler);
+        iface.cacheFailedDecrease(args.blockId, args.workerHostname, args.options,resultHandler);
       }
     }
 
@@ -6615,7 +6623,8 @@ public class BlockMasterWorkerService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCachePermission_args");
 
     private static final org.apache.thrift.protocol.TField BLOCK_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("blockId", org.apache.thrift.protocol.TType.I64, (short)1);
-    private static final org.apache.thrift.protocol.TField OPTIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("options", org.apache.thrift.protocol.TType.STRUCT, (short)2);
+    private static final org.apache.thrift.protocol.TField WORKER_HOSTNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("workerHostname", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField OPTIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("options", org.apache.thrift.protocol.TType.STRUCT, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -6624,6 +6633,7 @@ public class BlockMasterWorkerService {
     }
 
     private long blockId; // required
+    private String workerHostname; // required
     private GetCachePermissionTOptions options; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -6633,9 +6643,13 @@ public class BlockMasterWorkerService {
        */
       BLOCK_ID((short)1, "blockId"),
       /**
+       * the hostname of the worker
+       */
+      WORKER_HOSTNAME((short)2, "workerHostname"),
+      /**
        * the method options
        */
-      OPTIONS((short)2, "options");
+      OPTIONS((short)3, "options");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -6652,7 +6666,9 @@ public class BlockMasterWorkerService {
         switch(fieldId) {
           case 1: // BLOCK_ID
             return BLOCK_ID;
-          case 2: // OPTIONS
+          case 2: // WORKER_HOSTNAME
+            return WORKER_HOSTNAME;
+          case 3: // OPTIONS
             return OPTIONS;
           default:
             return null;
@@ -6701,6 +6717,8 @@ public class BlockMasterWorkerService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.BLOCK_ID, new org.apache.thrift.meta_data.FieldMetaData("blockId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+      tmpMap.put(_Fields.WORKER_HOSTNAME, new org.apache.thrift.meta_data.FieldMetaData("workerHostname", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.OPTIONS, new org.apache.thrift.meta_data.FieldMetaData("options", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GetCachePermissionTOptions.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -6712,11 +6730,13 @@ public class BlockMasterWorkerService {
 
     public getCachePermission_args(
       long blockId,
+      String workerHostname,
       GetCachePermissionTOptions options)
     {
       this();
       this.blockId = blockId;
       setBlockIdIsSet(true);
+      this.workerHostname = workerHostname;
       this.options = options;
     }
 
@@ -6726,6 +6746,9 @@ public class BlockMasterWorkerService {
     public getCachePermission_args(getCachePermission_args other) {
       __isset_bitfield = other.__isset_bitfield;
       this.blockId = other.blockId;
+      if (other.isSetWorkerHostname()) {
+        this.workerHostname = other.workerHostname;
+      }
       if (other.isSetOptions()) {
         this.options = new GetCachePermissionTOptions(other.options);
       }
@@ -6739,6 +6762,7 @@ public class BlockMasterWorkerService {
     public void clear() {
       setBlockIdIsSet(false);
       this.blockId = 0;
+      this.workerHostname = null;
       this.options = null;
     }
 
@@ -6769,6 +6793,36 @@ public class BlockMasterWorkerService {
 
     public void setBlockIdIsSet(boolean value) {
       __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __BLOCKID_ISSET_ID, value);
+    }
+
+    /**
+     * the hostname of the worker
+     */
+    public String getWorkerHostname() {
+      return this.workerHostname;
+    }
+
+    /**
+     * the hostname of the worker
+     */
+    public getCachePermission_args setWorkerHostname(String workerHostname) {
+      this.workerHostname = workerHostname;
+      return this;
+    }
+
+    public void unsetWorkerHostname() {
+      this.workerHostname = null;
+    }
+
+    /** Returns true if field workerHostname is set (has been assigned a value) and false otherwise */
+    public boolean isSetWorkerHostname() {
+      return this.workerHostname != null;
+    }
+
+    public void setWorkerHostnameIsSet(boolean value) {
+      if (!value) {
+        this.workerHostname = null;
+      }
     }
 
     /**
@@ -6811,6 +6865,14 @@ public class BlockMasterWorkerService {
         }
         break;
 
+      case WORKER_HOSTNAME:
+        if (value == null) {
+          unsetWorkerHostname();
+        } else {
+          setWorkerHostname((String)value);
+        }
+        break;
+
       case OPTIONS:
         if (value == null) {
           unsetOptions();
@@ -6826,6 +6888,9 @@ public class BlockMasterWorkerService {
       switch (field) {
       case BLOCK_ID:
         return getBlockId();
+
+      case WORKER_HOSTNAME:
+        return getWorkerHostname();
 
       case OPTIONS:
         return getOptions();
@@ -6843,6 +6908,8 @@ public class BlockMasterWorkerService {
       switch (field) {
       case BLOCK_ID:
         return isSetBlockId();
+      case WORKER_HOSTNAME:
+        return isSetWorkerHostname();
       case OPTIONS:
         return isSetOptions();
       }
@@ -6871,6 +6938,15 @@ public class BlockMasterWorkerService {
           return false;
       }
 
+      boolean this_present_workerHostname = true && this.isSetWorkerHostname();
+      boolean that_present_workerHostname = true && that.isSetWorkerHostname();
+      if (this_present_workerHostname || that_present_workerHostname) {
+        if (!(this_present_workerHostname && that_present_workerHostname))
+          return false;
+        if (!this.workerHostname.equals(that.workerHostname))
+          return false;
+      }
+
       boolean this_present_options = true && this.isSetOptions();
       boolean that_present_options = true && that.isSetOptions();
       if (this_present_options || that_present_options) {
@@ -6891,6 +6967,11 @@ public class BlockMasterWorkerService {
       list.add(present_blockId);
       if (present_blockId)
         list.add(blockId);
+
+      boolean present_workerHostname = true && (isSetWorkerHostname());
+      list.add(present_workerHostname);
+      if (present_workerHostname)
+        list.add(workerHostname);
 
       boolean present_options = true && (isSetOptions());
       list.add(present_options);
@@ -6914,6 +6995,16 @@ public class BlockMasterWorkerService {
       }
       if (isSetBlockId()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.blockId, other.blockId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetWorkerHostname()).compareTo(other.isSetWorkerHostname());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetWorkerHostname()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.workerHostname, other.workerHostname);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -6950,6 +7041,14 @@ public class BlockMasterWorkerService {
 
       sb.append("blockId:");
       sb.append(this.blockId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("workerHostname:");
+      if (this.workerHostname == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.workerHostname);
+      }
       first = false;
       if (!first) sb.append(", ");
       sb.append("options:");
@@ -7015,7 +7114,15 @@ public class BlockMasterWorkerService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // OPTIONS
+            case 2: // WORKER_HOSTNAME
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.workerHostname = iprot.readString();
+                struct.setWorkerHostnameIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // OPTIONS
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
                 struct.options = new GetCachePermissionTOptions();
                 struct.options.read(iprot);
@@ -7042,6 +7149,11 @@ public class BlockMasterWorkerService {
         oprot.writeFieldBegin(BLOCK_ID_FIELD_DESC);
         oprot.writeI64(struct.blockId);
         oprot.writeFieldEnd();
+        if (struct.workerHostname != null) {
+          oprot.writeFieldBegin(WORKER_HOSTNAME_FIELD_DESC);
+          oprot.writeString(struct.workerHostname);
+          oprot.writeFieldEnd();
+        }
         if (struct.options != null) {
           oprot.writeFieldBegin(OPTIONS_FIELD_DESC);
           struct.options.write(oprot);
@@ -7068,12 +7180,18 @@ public class BlockMasterWorkerService {
         if (struct.isSetBlockId()) {
           optionals.set(0);
         }
-        if (struct.isSetOptions()) {
+        if (struct.isSetWorkerHostname()) {
           optionals.set(1);
         }
-        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetOptions()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetBlockId()) {
           oprot.writeI64(struct.blockId);
+        }
+        if (struct.isSetWorkerHostname()) {
+          oprot.writeString(struct.workerHostname);
         }
         if (struct.isSetOptions()) {
           struct.options.write(oprot);
@@ -7083,12 +7201,16 @@ public class BlockMasterWorkerService {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getCachePermission_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(2);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           struct.blockId = iprot.readI64();
           struct.setBlockIdIsSet(true);
         }
         if (incoming.get(1)) {
+          struct.workerHostname = iprot.readString();
+          struct.setWorkerHostnameIsSet(true);
+        }
+        if (incoming.get(2)) {
           struct.options = new GetCachePermissionTOptions();
           struct.options.read(iprot);
           struct.setOptionsIsSet(true);
@@ -7468,7 +7590,8 @@ public class BlockMasterWorkerService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("cacheFailedDecrease_args");
 
     private static final org.apache.thrift.protocol.TField BLOCK_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("blockId", org.apache.thrift.protocol.TType.I64, (short)1);
-    private static final org.apache.thrift.protocol.TField OPTIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("options", org.apache.thrift.protocol.TType.STRUCT, (short)2);
+    private static final org.apache.thrift.protocol.TField WORKER_HOSTNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("workerHostname", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField OPTIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("options", org.apache.thrift.protocol.TType.STRUCT, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -7477,6 +7600,7 @@ public class BlockMasterWorkerService {
     }
 
     private long blockId; // required
+    private String workerHostname; // required
     private CacheFailedDecreaseTOptions options; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -7486,9 +7610,13 @@ public class BlockMasterWorkerService {
        */
       BLOCK_ID((short)1, "blockId"),
       /**
+       * the hostname of the worker
+       */
+      WORKER_HOSTNAME((short)2, "workerHostname"),
+      /**
        * the method options
        */
-      OPTIONS((short)2, "options");
+      OPTIONS((short)3, "options");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -7505,7 +7633,9 @@ public class BlockMasterWorkerService {
         switch(fieldId) {
           case 1: // BLOCK_ID
             return BLOCK_ID;
-          case 2: // OPTIONS
+          case 2: // WORKER_HOSTNAME
+            return WORKER_HOSTNAME;
+          case 3: // OPTIONS
             return OPTIONS;
           default:
             return null;
@@ -7554,6 +7684,8 @@ public class BlockMasterWorkerService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.BLOCK_ID, new org.apache.thrift.meta_data.FieldMetaData("blockId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+      tmpMap.put(_Fields.WORKER_HOSTNAME, new org.apache.thrift.meta_data.FieldMetaData("workerHostname", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.OPTIONS, new org.apache.thrift.meta_data.FieldMetaData("options", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, CacheFailedDecreaseTOptions.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -7565,11 +7697,13 @@ public class BlockMasterWorkerService {
 
     public cacheFailedDecrease_args(
       long blockId,
+      String workerHostname,
       CacheFailedDecreaseTOptions options)
     {
       this();
       this.blockId = blockId;
       setBlockIdIsSet(true);
+      this.workerHostname = workerHostname;
       this.options = options;
     }
 
@@ -7579,6 +7713,9 @@ public class BlockMasterWorkerService {
     public cacheFailedDecrease_args(cacheFailedDecrease_args other) {
       __isset_bitfield = other.__isset_bitfield;
       this.blockId = other.blockId;
+      if (other.isSetWorkerHostname()) {
+        this.workerHostname = other.workerHostname;
+      }
       if (other.isSetOptions()) {
         this.options = new CacheFailedDecreaseTOptions(other.options);
       }
@@ -7592,6 +7729,7 @@ public class BlockMasterWorkerService {
     public void clear() {
       setBlockIdIsSet(false);
       this.blockId = 0;
+      this.workerHostname = null;
       this.options = null;
     }
 
@@ -7622,6 +7760,36 @@ public class BlockMasterWorkerService {
 
     public void setBlockIdIsSet(boolean value) {
       __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __BLOCKID_ISSET_ID, value);
+    }
+
+    /**
+     * the hostname of the worker
+     */
+    public String getWorkerHostname() {
+      return this.workerHostname;
+    }
+
+    /**
+     * the hostname of the worker
+     */
+    public cacheFailedDecrease_args setWorkerHostname(String workerHostname) {
+      this.workerHostname = workerHostname;
+      return this;
+    }
+
+    public void unsetWorkerHostname() {
+      this.workerHostname = null;
+    }
+
+    /** Returns true if field workerHostname is set (has been assigned a value) and false otherwise */
+    public boolean isSetWorkerHostname() {
+      return this.workerHostname != null;
+    }
+
+    public void setWorkerHostnameIsSet(boolean value) {
+      if (!value) {
+        this.workerHostname = null;
+      }
     }
 
     /**
@@ -7664,6 +7832,14 @@ public class BlockMasterWorkerService {
         }
         break;
 
+      case WORKER_HOSTNAME:
+        if (value == null) {
+          unsetWorkerHostname();
+        } else {
+          setWorkerHostname((String)value);
+        }
+        break;
+
       case OPTIONS:
         if (value == null) {
           unsetOptions();
@@ -7679,6 +7855,9 @@ public class BlockMasterWorkerService {
       switch (field) {
       case BLOCK_ID:
         return getBlockId();
+
+      case WORKER_HOSTNAME:
+        return getWorkerHostname();
 
       case OPTIONS:
         return getOptions();
@@ -7696,6 +7875,8 @@ public class BlockMasterWorkerService {
       switch (field) {
       case BLOCK_ID:
         return isSetBlockId();
+      case WORKER_HOSTNAME:
+        return isSetWorkerHostname();
       case OPTIONS:
         return isSetOptions();
       }
@@ -7724,6 +7905,15 @@ public class BlockMasterWorkerService {
           return false;
       }
 
+      boolean this_present_workerHostname = true && this.isSetWorkerHostname();
+      boolean that_present_workerHostname = true && that.isSetWorkerHostname();
+      if (this_present_workerHostname || that_present_workerHostname) {
+        if (!(this_present_workerHostname && that_present_workerHostname))
+          return false;
+        if (!this.workerHostname.equals(that.workerHostname))
+          return false;
+      }
+
       boolean this_present_options = true && this.isSetOptions();
       boolean that_present_options = true && that.isSetOptions();
       if (this_present_options || that_present_options) {
@@ -7744,6 +7934,11 @@ public class BlockMasterWorkerService {
       list.add(present_blockId);
       if (present_blockId)
         list.add(blockId);
+
+      boolean present_workerHostname = true && (isSetWorkerHostname());
+      list.add(present_workerHostname);
+      if (present_workerHostname)
+        list.add(workerHostname);
 
       boolean present_options = true && (isSetOptions());
       list.add(present_options);
@@ -7767,6 +7962,16 @@ public class BlockMasterWorkerService {
       }
       if (isSetBlockId()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.blockId, other.blockId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetWorkerHostname()).compareTo(other.isSetWorkerHostname());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetWorkerHostname()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.workerHostname, other.workerHostname);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -7803,6 +8008,14 @@ public class BlockMasterWorkerService {
 
       sb.append("blockId:");
       sb.append(this.blockId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("workerHostname:");
+      if (this.workerHostname == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.workerHostname);
+      }
       first = false;
       if (!first) sb.append(", ");
       sb.append("options:");
@@ -7868,7 +8081,15 @@ public class BlockMasterWorkerService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // OPTIONS
+            case 2: // WORKER_HOSTNAME
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.workerHostname = iprot.readString();
+                struct.setWorkerHostnameIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // OPTIONS
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
                 struct.options = new CacheFailedDecreaseTOptions();
                 struct.options.read(iprot);
@@ -7895,6 +8116,11 @@ public class BlockMasterWorkerService {
         oprot.writeFieldBegin(BLOCK_ID_FIELD_DESC);
         oprot.writeI64(struct.blockId);
         oprot.writeFieldEnd();
+        if (struct.workerHostname != null) {
+          oprot.writeFieldBegin(WORKER_HOSTNAME_FIELD_DESC);
+          oprot.writeString(struct.workerHostname);
+          oprot.writeFieldEnd();
+        }
         if (struct.options != null) {
           oprot.writeFieldBegin(OPTIONS_FIELD_DESC);
           struct.options.write(oprot);
@@ -7921,12 +8147,18 @@ public class BlockMasterWorkerService {
         if (struct.isSetBlockId()) {
           optionals.set(0);
         }
-        if (struct.isSetOptions()) {
+        if (struct.isSetWorkerHostname()) {
           optionals.set(1);
         }
-        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetOptions()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetBlockId()) {
           oprot.writeI64(struct.blockId);
+        }
+        if (struct.isSetWorkerHostname()) {
+          oprot.writeString(struct.workerHostname);
         }
         if (struct.isSetOptions()) {
           struct.options.write(oprot);
@@ -7936,12 +8168,16 @@ public class BlockMasterWorkerService {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, cacheFailedDecrease_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(2);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           struct.blockId = iprot.readI64();
           struct.setBlockIdIsSet(true);
         }
         if (incoming.get(1)) {
+          struct.workerHostname = iprot.readString();
+          struct.setWorkerHostnameIsSet(true);
+        }
+        if (incoming.get(2)) {
           struct.options = new CacheFailedDecreaseTOptions();
           struct.options.read(iprot);
           struct.setOptionsIsSet(true);
