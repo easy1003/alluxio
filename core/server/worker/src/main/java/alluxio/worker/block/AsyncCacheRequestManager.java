@@ -75,7 +75,8 @@ public class AsyncCacheRequestManager {
     }
     LOG.info("try to getCachePermission, blockId {}",
             blockId);
-    if (mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID, blockId, mLocalWorkerHostname)) {
+    String lWorker = mLocalWorkerHostname;
+    if (mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID, blockId, lWorker)) {
       try {
         LOG.warn("{} start to request cache", blockId);
         mAsyncCacheExecutor.submit(() -> {
@@ -87,7 +88,7 @@ public class AsyncCacheRequestManager {
               try {
                 mBlockWorker.unlockBlock(lockId);
               } catch (BlockDoesNotExistException e) {
-                LOG.error("Failed to unlock block on async caching. We should never reach here", e);
+                LOG.error("Failed to unlock block on async caching. never reach here", e);
               }
               return;
             }
@@ -105,9 +106,9 @@ public class AsyncCacheRequestManager {
             }
             LOG.debug("Result of async caching block {}: {}", blockId, result);
           } catch (Exception e) {
-            LOG.warn("Failed to complete async cache request {} from UFS", request, e.getMessage());
+            LOG.warn("Failed to complete cache request {} from UFS", request, e.getMessage());
             try {
-              mBlockWorker.cacheFailedDecrease(Sessions.ACCESS_BLOCK_SESSION_ID, blockId, mLocalWorkerHostname);
+              mBlockWorker.cacheFailedDecrease(Sessions.ACCESS_BLOCK_SESSION_ID, blockId, lWorker);
             } catch (Exception e1) {
               e1.printStackTrace();
             }

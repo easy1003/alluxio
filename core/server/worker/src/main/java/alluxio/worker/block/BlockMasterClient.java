@@ -101,11 +101,13 @@ public final class BlockMasterClient extends AbstractMasterClient {
    * @param workerHostname the worker hostname
    * @return whether to cache
    */
-  public synchronized boolean getCachePermision(final long blockId, final String workerHostname) throws Exception {
+  public synchronized boolean getCachePermision(final long blockId,
+      final String workerHostname) throws Exception {
     return retryRPC(new RpcCallable<Boolean>() {
       @Override
       public Boolean call() throws TException {
-        return mClient.getCachePermission(blockId, workerHostname, new GetCachePermissionTOptions()).isIsCache();
+        return mClient.getCachePermission(blockId,
+                workerHostname, new GetCachePermissionTOptions()).isIsCache();
       }
     });
   }
@@ -120,7 +122,8 @@ public final class BlockMasterClient extends AbstractMasterClient {
     retryRPC(new RpcCallable<Void>() {
       @Override
       public Void call() throws TException {
-        mClient.cacheFailedDecrease(blockId, workerHostname, new CacheFailedDecreaseTOptions());
+        mClient.cacheFailedDecrease(blockId,
+                workerHostname, new CacheFailedDecreaseTOptions());
         return null;
       }
     });
