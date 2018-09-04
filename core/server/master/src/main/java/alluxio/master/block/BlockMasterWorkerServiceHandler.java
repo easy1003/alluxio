@@ -127,8 +127,8 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
 
       @Override
       public String toString() {
-        return String.format("getCachePermission: blockId=%s, workerHostname=%s," +
-                "options=%s", blockId, workerHostname, options);
+        return String.format("getCachePermission: blockId=%s, workerHostname=%s, "
+                + "options=%s", blockId, workerHostname, options);
       }
     });
   }
@@ -149,8 +149,8 @@ public final class BlockMasterWorkerServiceHandler implements BlockMasterWorkerS
 
       @Override
       public String toString() {
-        return String.format("cacheFailedDecrease: blockId=%s, workerHostname=%s," +
-                " options=%s", blockId, workerHostname,options);
+        return String.format("cacheFailedDecrease: blockId=%s, workerHostname=%s, "
+                + " options=%s", blockId, workerHostname, options);
       }
     });
   }
