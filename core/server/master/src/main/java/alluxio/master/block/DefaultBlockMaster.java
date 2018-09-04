@@ -519,6 +519,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
     LOG.info("alluxio.user.cache.limit.number is {}.",
             cacheLimit);
     HashSet<String> newSet = new HashSet<>();
+    newSet.add(workerHostname);
     HashSet<String> count = mBlockCacheInfo.putIfAbsent(blockId, newSet);
     if (count == null) {
       LOG.info("put if absent, blockId {}",
