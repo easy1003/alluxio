@@ -137,7 +137,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   /** Keeps track of blocks which are no longer in Alluxio storage. */
   private final ConcurrentHashSet<Long> mLostBlocks = new ConcurrentHashSet<>(64, 0.90f, 64);
 
-  private final ConcurrentHashMap<Long, AtomicInteger> mBlockCacheInfo =
+  private final ConcurrentHashMap<Long, HashSet<String>> mBlockCacheInfo =
       new ConcurrentHashMap<>(8192, 0.90f, 64);
 
   /** This state must be journaled. */
@@ -519,23 +519,23 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
             .getInt(PropertyKey.USER_CACHE_LIMIT_NUMBER);
     LOG.info("alluxio.user.cache.limit.number is {}.",
             cacheLimit);
-    AtomicInteger newCount = new AtomicInteger(0);
-    AtomicInteger count = mBlockCacheInfo.putIfAbsent(blockId, newCount);
+    HashSet<String> newSet = new HashSet<>();
+    HashSet<String> count = mBlockCacheInfo.putIfAbsent(blockId, newSet);
     if (count == null) {
       LOG.info("put if absent, blockId {}",
               blockId);
       return true;
     }
     synchronized (count) {
-      int tmpCount = count.get();
+      int tmpCount = count.size();
       if (tmpCount + 1 > cacheLimit) {
-        LOG.info("dont't cache the blockId {}, count is {}",
-                blockId, tmpCount);
+        LOG.info("dont't cache the blockId {}, count is {}, set: {}",
+                blockId, tmpCount, count);
         return false;
       } else {
-        count.incrementAndGet();
-        LOG.info("getCachePermission, cache the blockId {}, count is {}",
-                blockId, count.get());
+        count.add(workerHostname);
+        LOG.info("getCachePermission, cache the blockId {}, count is {}, set:{}",
+                blockId, count.size(), count);
         return true;
       }
     }
@@ -543,9 +543,9 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   @Override
   public void cacheFailedDecrease(long blockId, String workerHostname) {
-    AtomicInteger count = mBlockCacheInfo.get(blockId);
+    HashSet<String> count = mBlockCacheInfo.get(blockId);
     synchronized (count) {
-      count.decrementAndGet();
+      count.remove(workerHostname);
       LOG.info("cacheFailedDecrease, blockId{}",
               blockId);
     }
@@ -553,15 +553,15 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   @Override
   public void clearCacheBlockInfoByID(long blockId) {
-    AtomicInteger newCount = new AtomicInteger(0);
-    AtomicInteger count = mBlockCacheInfo.putIfAbsent(blockId, newCount);
+    HashSet<String> newSet = new HashSet<>();
+    HashSet<String> count = mBlockCacheInfo.putIfAbsent(blockId, newSet);
     if (count == null) {
       LOG.info("clearCacheBlockInfoByID, don't have any block, blockId{}",
               blockId);
       return;
     }
     synchronized (count) {
-      count.set(0);
+      count.clear();
       LOG.info("clearCacheBlockInfoByID, blockId{}",
               blockId);
     }
