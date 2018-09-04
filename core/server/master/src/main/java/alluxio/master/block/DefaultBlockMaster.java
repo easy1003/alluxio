@@ -553,7 +553,13 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   @Override
   public void clearCacheBlockInfoByID(long blockId) {
-    AtomicInteger count = mBlockCacheInfo.get(blockId);
+    AtomicInteger newCount = new AtomicInteger(0);
+    AtomicInteger count = mBlockCacheInfo.putIfAbsent(blockId, newCount);
+    if (count == null) {
+      LOG.info("clearCacheBlockInfoByID, don't have any block, blockId{}",
+              blockId);
+      return;
+    }
     synchronized (count) {
       count.set(0);
       LOG.info("clearCacheBlockInfoByID, blockId{}",
