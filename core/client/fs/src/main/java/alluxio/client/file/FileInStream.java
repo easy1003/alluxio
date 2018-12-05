@@ -281,6 +281,11 @@ public class FileInStream extends InputStream implements BoundedStream, Position
     long blockId = mStatus.getBlockIds().get(Math.toIntExact(mPosition / mBlockSize));
     // Create stream
     mBlockInStream = mBlockStore.getInStream(blockId, mOptions, mFailedWorkers);
+    // if ufs  blockchecksumstore
+    // async
+    // others blockconsistencycheck
+    // log
+
     // Set the stream to the correct position.
     long offset = mPosition % mBlockSize;
     mBlockInStream.seek(offset);

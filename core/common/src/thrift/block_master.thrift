@@ -33,6 +33,15 @@ struct GetWorkerInfoListTResponse {
   1: list<WorkerInfo> workerInfoList
 }
 
+struct BlockChecksumStoreTOptions {}
+struct BlockChecksumStoreTResponse {}
+
+struct BlockConsitencyCheckTOptions {}
+struct BlockConsitencyCheckTResponse {
+  1: i64 blockId,
+  2: bool isConsistency
+}
+
 /**
  * This interface contains block master service endpoints for Alluxio clients.
  */
@@ -67,6 +76,24 @@ service BlockMasterClientService extends common.AlluxioService {
   GetWorkerInfoListTResponse getWorkerInfoList(
     /** the method options */ 1: GetWorkerInfoListTOptions options,
   ) throws (1: exception.AlluxioTException e)
+
+  /**
+   *
+   */
+  BlockChecksumStoreTResponse blockChecksumStore(
+    /** the id of the block */ 1: i64 blockId,
+    /** the digest of the block */  2: string digest,
+    /** the method options*/  3: BlockChecksumStoreTOptions options,
+  ) throws (1: exception.AlluxioTException e)
+  /**
+   *
+   */
+  BlockConsitencyCheckTResponse blockConsitencyCheck(
+    /** the id of the block */ 1: i64 blockId,
+    /** the digest of the block */  2: string digest,
+    /** the method options*/  3: BlockConsitencyCheckTOptions options,
+  ) throws (1: exception.AlluxioTException e)
+
 }
 
 struct BlockHeartbeatTOptions {}
