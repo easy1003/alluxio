@@ -20,6 +20,8 @@ import alluxio.thrift.GetBlockInfoTOptions;
 import alluxio.thrift.GetCapacityBytesTOptions;
 import alluxio.thrift.GetUsedBytesTOptions;
 import alluxio.thrift.GetWorkerInfoListTOptions;
+import alluxio.thrift.BlockChecksumStoreTOptions;
+import alluxio.thrift.BlockConsitencyCheckTOptions;
 import alluxio.wire.BlockInfo;
 import alluxio.wire.ThriftUtils;
 import alluxio.wire.WorkerInfo;
@@ -103,6 +105,33 @@ public final class RetryHandlingBlockMasterClient extends AbstractMasterClient
       public BlockInfo call() throws TException {
         return ThriftUtils
             .fromThrift(mClient.getBlockInfo(blockId, new GetBlockInfoTOptions()).getBlockInfo());
+      }
+    });
+  }
+
+  /**
+   * Returns the {@link BlockInfo} for a block id.
+   *
+   * @param blockId the block id to get the BlockInfo for
+   */
+  public synchronized void blockChecksumStore(final long blockId, String digest)
+          throws IOException {
+    retryRPC(new RpcCallable<Void>() {
+      @Override
+      public Void call() throws TException {
+        mClient.blockChecksumStore(blockId, digest, new BlockChecksumStoreTOptions());
+        return null;
+      }
+    });
+  }
+
+  public synchronized boolean blockConsitencyCheck(final long blockId, String digest)
+          throws IOException {
+    return retryRPC(new RpcCallable<Boolean>() {
+      @Override
+      public Boolean call() throws TException {
+        return mClient.blockConsitencyCheck(blockId,
+                digest, new BlockConsitencyCheckTOptions()).isIsConsistency();
       }
     });
   }

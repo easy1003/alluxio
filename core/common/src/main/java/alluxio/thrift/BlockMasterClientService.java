@@ -72,6 +72,28 @@ public class BlockMasterClientService {
      */
     public GetWorkerInfoListTResponse getWorkerInfoList(GetWorkerInfoListTOptions options) throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException;
 
+    /**
+     * 
+     * 
+     * @param blockId the id of the block
+     * 
+     * @param digest the digest of the block
+     * 
+     * @param options the method options
+     */
+    public BlockChecksumStoreTResponse blockChecksumStore(long blockId, String digest, BlockChecksumStoreTOptions options) throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException;
+
+    /**
+     * 
+     * 
+     * @param blockId the id of the block
+     * 
+     * @param digest the digest of the block
+     * 
+     * @param options the method options
+     */
+    public BlockConsitencyCheckTResponse blockConsitencyCheck(long blockId, String digest, BlockConsitencyCheckTOptions options) throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface extends alluxio.thrift.AlluxioService .AsyncIface {
@@ -83,6 +105,10 @@ public class BlockMasterClientService {
     public void getUsedBytes(GetUsedBytesTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void getWorkerInfoList(GetWorkerInfoListTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+
+    public void blockChecksumStore(long blockId, String digest, BlockChecksumStoreTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+
+    public void blockConsitencyCheck(long blockId, String digest, BlockConsitencyCheckTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -209,6 +235,62 @@ public class BlockMasterClientService {
         throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getWorkerInfoList failed: unknown result");
+    }
+
+    public BlockChecksumStoreTResponse blockChecksumStore(long blockId, String digest, BlockChecksumStoreTOptions options) throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException
+    {
+      send_blockChecksumStore(blockId, digest, options);
+      return recv_blockChecksumStore();
+    }
+
+    public void send_blockChecksumStore(long blockId, String digest, BlockChecksumStoreTOptions options) throws org.apache.thrift.TException
+    {
+      blockChecksumStore_args args = new blockChecksumStore_args();
+      args.setBlockId(blockId);
+      args.setDigest(digest);
+      args.setOptions(options);
+      sendBase("blockChecksumStore", args);
+    }
+
+    public BlockChecksumStoreTResponse recv_blockChecksumStore() throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException
+    {
+      blockChecksumStore_result result = new blockChecksumStore_result();
+      receiveBase(result, "blockChecksumStore");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "blockChecksumStore failed: unknown result");
+    }
+
+    public BlockConsitencyCheckTResponse blockConsitencyCheck(long blockId, String digest, BlockConsitencyCheckTOptions options) throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException
+    {
+      send_blockConsitencyCheck(blockId, digest, options);
+      return recv_blockConsitencyCheck();
+    }
+
+    public void send_blockConsitencyCheck(long blockId, String digest, BlockConsitencyCheckTOptions options) throws org.apache.thrift.TException
+    {
+      blockConsitencyCheck_args args = new blockConsitencyCheck_args();
+      args.setBlockId(blockId);
+      args.setDigest(digest);
+      args.setOptions(options);
+      sendBase("blockConsitencyCheck", args);
+    }
+
+    public BlockConsitencyCheckTResponse recv_blockConsitencyCheck() throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException
+    {
+      blockConsitencyCheck_result result = new blockConsitencyCheck_result();
+      receiveBase(result, "blockConsitencyCheck");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "blockConsitencyCheck failed: unknown result");
     }
 
   }
@@ -360,6 +442,82 @@ public class BlockMasterClientService {
       }
     }
 
+    public void blockChecksumStore(long blockId, String digest, BlockChecksumStoreTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      blockChecksumStore_call method_call = new blockChecksumStore_call(blockId, digest, options, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class blockChecksumStore_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private long blockId;
+      private String digest;
+      private BlockChecksumStoreTOptions options;
+      public blockChecksumStore_call(long blockId, String digest, BlockChecksumStoreTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.blockId = blockId;
+        this.digest = digest;
+        this.options = options;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("blockChecksumStore", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        blockChecksumStore_args args = new blockChecksumStore_args();
+        args.setBlockId(blockId);
+        args.setDigest(digest);
+        args.setOptions(options);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public BlockChecksumStoreTResponse getResult() throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_blockChecksumStore();
+      }
+    }
+
+    public void blockConsitencyCheck(long blockId, String digest, BlockConsitencyCheckTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      blockConsitencyCheck_call method_call = new blockConsitencyCheck_call(blockId, digest, options, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class blockConsitencyCheck_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private long blockId;
+      private String digest;
+      private BlockConsitencyCheckTOptions options;
+      public blockConsitencyCheck_call(long blockId, String digest, BlockConsitencyCheckTOptions options, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.blockId = blockId;
+        this.digest = digest;
+        this.options = options;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("blockConsitencyCheck", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        blockConsitencyCheck_args args = new blockConsitencyCheck_args();
+        args.setBlockId(blockId);
+        args.setDigest(digest);
+        args.setOptions(options);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public BlockConsitencyCheckTResponse getResult() throws alluxio.thrift.AlluxioTException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_blockConsitencyCheck();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends alluxio.thrift.AlluxioService.Processor<I> implements org.apache.thrift.TProcessor {
@@ -377,6 +535,8 @@ public class BlockMasterClientService {
       processMap.put("getCapacityBytes", new getCapacityBytes());
       processMap.put("getUsedBytes", new getUsedBytes());
       processMap.put("getWorkerInfoList", new getWorkerInfoList());
+      processMap.put("blockChecksumStore", new blockChecksumStore());
+      processMap.put("blockConsitencyCheck", new blockConsitencyCheck());
       return processMap;
     }
 
@@ -476,6 +636,54 @@ public class BlockMasterClientService {
       }
     }
 
+    public static class blockChecksumStore<I extends Iface> extends org.apache.thrift.ProcessFunction<I, blockChecksumStore_args> {
+      public blockChecksumStore() {
+        super("blockChecksumStore");
+      }
+
+      public blockChecksumStore_args getEmptyArgsInstance() {
+        return new blockChecksumStore_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public blockChecksumStore_result getResult(I iface, blockChecksumStore_args args) throws org.apache.thrift.TException {
+        blockChecksumStore_result result = new blockChecksumStore_result();
+        try {
+          result.success = iface.blockChecksumStore(args.blockId, args.digest, args.options);
+        } catch (alluxio.thrift.AlluxioTException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class blockConsitencyCheck<I extends Iface> extends org.apache.thrift.ProcessFunction<I, blockConsitencyCheck_args> {
+      public blockConsitencyCheck() {
+        super("blockConsitencyCheck");
+      }
+
+      public blockConsitencyCheck_args getEmptyArgsInstance() {
+        return new blockConsitencyCheck_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public blockConsitencyCheck_result getResult(I iface, blockConsitencyCheck_args args) throws org.apache.thrift.TException {
+        blockConsitencyCheck_result result = new blockConsitencyCheck_result();
+        try {
+          result.success = iface.blockConsitencyCheck(args.blockId, args.digest, args.options);
+        } catch (alluxio.thrift.AlluxioTException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends alluxio.thrift.AlluxioService.AsyncProcessor<I> {
@@ -493,6 +701,8 @@ public class BlockMasterClientService {
       processMap.put("getCapacityBytes", new getCapacityBytes());
       processMap.put("getUsedBytes", new getUsedBytes());
       processMap.put("getWorkerInfoList", new getWorkerInfoList());
+      processMap.put("blockChecksumStore", new blockChecksumStore());
+      processMap.put("blockConsitencyCheck", new blockConsitencyCheck());
       return processMap;
     }
 
@@ -721,6 +931,120 @@ public class BlockMasterClientService {
 
       public void start(I iface, getWorkerInfoList_args args, org.apache.thrift.async.AsyncMethodCallback<GetWorkerInfoListTResponse> resultHandler) throws TException {
         iface.getWorkerInfoList(args.options,resultHandler);
+      }
+    }
+
+    public static class blockChecksumStore<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, blockChecksumStore_args, BlockChecksumStoreTResponse> {
+      public blockChecksumStore() {
+        super("blockChecksumStore");
+      }
+
+      public blockChecksumStore_args getEmptyArgsInstance() {
+        return new blockChecksumStore_args();
+      }
+
+      public AsyncMethodCallback<BlockChecksumStoreTResponse> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new AsyncMethodCallback<BlockChecksumStoreTResponse>() { 
+          public void onComplete(BlockChecksumStoreTResponse o) {
+            blockChecksumStore_result result = new blockChecksumStore_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+              return;
+            } catch (Exception e) {
+              LOGGER.error("Exception writing to internal frame buffer", e);
+            }
+            fb.close();
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TBase msg;
+            blockChecksumStore_result result = new blockChecksumStore_result();
+            if (e instanceof alluxio.thrift.AlluxioTException) {
+                        result.e = (alluxio.thrift.AlluxioTException) e;
+                        result.setEIsSet(true);
+                        msg = result;
+            }
+             else 
+            {
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+              return;
+            } catch (Exception ex) {
+              LOGGER.error("Exception writing to internal frame buffer", ex);
+            }
+            fb.close();
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, blockChecksumStore_args args, org.apache.thrift.async.AsyncMethodCallback<BlockChecksumStoreTResponse> resultHandler) throws TException {
+        iface.blockChecksumStore(args.blockId, args.digest, args.options,resultHandler);
+      }
+    }
+
+    public static class blockConsitencyCheck<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, blockConsitencyCheck_args, BlockConsitencyCheckTResponse> {
+      public blockConsitencyCheck() {
+        super("blockConsitencyCheck");
+      }
+
+      public blockConsitencyCheck_args getEmptyArgsInstance() {
+        return new blockConsitencyCheck_args();
+      }
+
+      public AsyncMethodCallback<BlockConsitencyCheckTResponse> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new AsyncMethodCallback<BlockConsitencyCheckTResponse>() { 
+          public void onComplete(BlockConsitencyCheckTResponse o) {
+            blockConsitencyCheck_result result = new blockConsitencyCheck_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+              return;
+            } catch (Exception e) {
+              LOGGER.error("Exception writing to internal frame buffer", e);
+            }
+            fb.close();
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TBase msg;
+            blockConsitencyCheck_result result = new blockConsitencyCheck_result();
+            if (e instanceof alluxio.thrift.AlluxioTException) {
+                        result.e = (alluxio.thrift.AlluxioTException) e;
+                        result.setEIsSet(true);
+                        msg = result;
+            }
+             else 
+            {
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+              return;
+            } catch (Exception ex) {
+              LOGGER.error("Exception writing to internal frame buffer", ex);
+            }
+            fb.close();
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, blockConsitencyCheck_args args, org.apache.thrift.async.AsyncMethodCallback<BlockConsitencyCheckTResponse> resultHandler) throws TException {
+        iface.blockConsitencyCheck(args.blockId, args.digest, args.options,resultHandler);
       }
     }
 
@@ -4217,6 +4541,2154 @@ public class BlockMasterClientService {
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new GetWorkerInfoListTResponse();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new alluxio.thrift.AlluxioTException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class blockChecksumStore_args implements org.apache.thrift.TBase<blockChecksumStore_args, blockChecksumStore_args._Fields>, java.io.Serializable, Cloneable, Comparable<blockChecksumStore_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("blockChecksumStore_args");
+
+    private static final org.apache.thrift.protocol.TField BLOCK_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("blockId", org.apache.thrift.protocol.TType.I64, (short)1);
+    private static final org.apache.thrift.protocol.TField DIGEST_FIELD_DESC = new org.apache.thrift.protocol.TField("digest", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField OPTIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("options", org.apache.thrift.protocol.TType.STRUCT, (short)3);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new blockChecksumStore_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new blockChecksumStore_argsTupleSchemeFactory());
+    }
+
+    private long blockId; // required
+    private String digest; // required
+    private BlockChecksumStoreTOptions options; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      /**
+       * the id of the block
+       */
+      BLOCK_ID((short)1, "blockId"),
+      /**
+       * the digest of the block
+       */
+      DIGEST((short)2, "digest"),
+      /**
+       * the method options
+       */
+      OPTIONS((short)3, "options");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // BLOCK_ID
+            return BLOCK_ID;
+          case 2: // DIGEST
+            return DIGEST;
+          case 3: // OPTIONS
+            return OPTIONS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __BLOCKID_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.BLOCK_ID, new org.apache.thrift.meta_data.FieldMetaData("blockId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+      tmpMap.put(_Fields.DIGEST, new org.apache.thrift.meta_data.FieldMetaData("digest", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.OPTIONS, new org.apache.thrift.meta_data.FieldMetaData("options", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, BlockChecksumStoreTOptions.class)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(blockChecksumStore_args.class, metaDataMap);
+    }
+
+    public blockChecksumStore_args() {
+    }
+
+    public blockChecksumStore_args(
+      long blockId,
+      String digest,
+      BlockChecksumStoreTOptions options)
+    {
+      this();
+      this.blockId = blockId;
+      setBlockIdIsSet(true);
+      this.digest = digest;
+      this.options = options;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public blockChecksumStore_args(blockChecksumStore_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.blockId = other.blockId;
+      if (other.isSetDigest()) {
+        this.digest = other.digest;
+      }
+      if (other.isSetOptions()) {
+        this.options = new BlockChecksumStoreTOptions(other.options);
+      }
+    }
+
+    public blockChecksumStore_args deepCopy() {
+      return new blockChecksumStore_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setBlockIdIsSet(false);
+      this.blockId = 0;
+      this.digest = null;
+      this.options = null;
+    }
+
+    /**
+     * the id of the block
+     */
+    public long getBlockId() {
+      return this.blockId;
+    }
+
+    /**
+     * the id of the block
+     */
+    public blockChecksumStore_args setBlockId(long blockId) {
+      this.blockId = blockId;
+      setBlockIdIsSet(true);
+      return this;
+    }
+
+    public void unsetBlockId() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __BLOCKID_ISSET_ID);
+    }
+
+    /** Returns true if field blockId is set (has been assigned a value) and false otherwise */
+    public boolean isSetBlockId() {
+      return EncodingUtils.testBit(__isset_bitfield, __BLOCKID_ISSET_ID);
+    }
+
+    public void setBlockIdIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __BLOCKID_ISSET_ID, value);
+    }
+
+    /**
+     * the digest of the block
+     */
+    public String getDigest() {
+      return this.digest;
+    }
+
+    /**
+     * the digest of the block
+     */
+    public blockChecksumStore_args setDigest(String digest) {
+      this.digest = digest;
+      return this;
+    }
+
+    public void unsetDigest() {
+      this.digest = null;
+    }
+
+    /** Returns true if field digest is set (has been assigned a value) and false otherwise */
+    public boolean isSetDigest() {
+      return this.digest != null;
+    }
+
+    public void setDigestIsSet(boolean value) {
+      if (!value) {
+        this.digest = null;
+      }
+    }
+
+    /**
+     * the method options
+     */
+    public BlockChecksumStoreTOptions getOptions() {
+      return this.options;
+    }
+
+    /**
+     * the method options
+     */
+    public blockChecksumStore_args setOptions(BlockChecksumStoreTOptions options) {
+      this.options = options;
+      return this;
+    }
+
+    public void unsetOptions() {
+      this.options = null;
+    }
+
+    /** Returns true if field options is set (has been assigned a value) and false otherwise */
+    public boolean isSetOptions() {
+      return this.options != null;
+    }
+
+    public void setOptionsIsSet(boolean value) {
+      if (!value) {
+        this.options = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case BLOCK_ID:
+        if (value == null) {
+          unsetBlockId();
+        } else {
+          setBlockId((Long)value);
+        }
+        break;
+
+      case DIGEST:
+        if (value == null) {
+          unsetDigest();
+        } else {
+          setDigest((String)value);
+        }
+        break;
+
+      case OPTIONS:
+        if (value == null) {
+          unsetOptions();
+        } else {
+          setOptions((BlockChecksumStoreTOptions)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case BLOCK_ID:
+        return getBlockId();
+
+      case DIGEST:
+        return getDigest();
+
+      case OPTIONS:
+        return getOptions();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case BLOCK_ID:
+        return isSetBlockId();
+      case DIGEST:
+        return isSetDigest();
+      case OPTIONS:
+        return isSetOptions();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof blockChecksumStore_args)
+        return this.equals((blockChecksumStore_args)that);
+      return false;
+    }
+
+    public boolean equals(blockChecksumStore_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_blockId = true;
+      boolean that_present_blockId = true;
+      if (this_present_blockId || that_present_blockId) {
+        if (!(this_present_blockId && that_present_blockId))
+          return false;
+        if (this.blockId != that.blockId)
+          return false;
+      }
+
+      boolean this_present_digest = true && this.isSetDigest();
+      boolean that_present_digest = true && that.isSetDigest();
+      if (this_present_digest || that_present_digest) {
+        if (!(this_present_digest && that_present_digest))
+          return false;
+        if (!this.digest.equals(that.digest))
+          return false;
+      }
+
+      boolean this_present_options = true && this.isSetOptions();
+      boolean that_present_options = true && that.isSetOptions();
+      if (this_present_options || that_present_options) {
+        if (!(this_present_options && that_present_options))
+          return false;
+        if (!this.options.equals(that.options))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_blockId = true;
+      list.add(present_blockId);
+      if (present_blockId)
+        list.add(blockId);
+
+      boolean present_digest = true && (isSetDigest());
+      list.add(present_digest);
+      if (present_digest)
+        list.add(digest);
+
+      boolean present_options = true && (isSetOptions());
+      list.add(present_options);
+      if (present_options)
+        list.add(options);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(blockChecksumStore_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetBlockId()).compareTo(other.isSetBlockId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetBlockId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.blockId, other.blockId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetDigest()).compareTo(other.isSetDigest());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetDigest()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.digest, other.digest);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetOptions()).compareTo(other.isSetOptions());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOptions()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.options, other.options);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("blockChecksumStore_args(");
+      boolean first = true;
+
+      sb.append("blockId:");
+      sb.append(this.blockId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("digest:");
+      if (this.digest == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.digest);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("options:");
+      if (this.options == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.options);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (options != null) {
+        options.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class blockChecksumStore_argsStandardSchemeFactory implements SchemeFactory {
+      public blockChecksumStore_argsStandardScheme getScheme() {
+        return new blockChecksumStore_argsStandardScheme();
+      }
+    }
+
+    private static class blockChecksumStore_argsStandardScheme extends StandardScheme<blockChecksumStore_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, blockChecksumStore_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // BLOCK_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
+                struct.blockId = iprot.readI64();
+                struct.setBlockIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // DIGEST
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.digest = iprot.readString();
+                struct.setDigestIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // OPTIONS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.options = new BlockChecksumStoreTOptions();
+                struct.options.read(iprot);
+                struct.setOptionsIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, blockChecksumStore_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(BLOCK_ID_FIELD_DESC);
+        oprot.writeI64(struct.blockId);
+        oprot.writeFieldEnd();
+        if (struct.digest != null) {
+          oprot.writeFieldBegin(DIGEST_FIELD_DESC);
+          oprot.writeString(struct.digest);
+          oprot.writeFieldEnd();
+        }
+        if (struct.options != null) {
+          oprot.writeFieldBegin(OPTIONS_FIELD_DESC);
+          struct.options.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class blockChecksumStore_argsTupleSchemeFactory implements SchemeFactory {
+      public blockChecksumStore_argsTupleScheme getScheme() {
+        return new blockChecksumStore_argsTupleScheme();
+      }
+    }
+
+    private static class blockChecksumStore_argsTupleScheme extends TupleScheme<blockChecksumStore_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, blockChecksumStore_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetBlockId()) {
+          optionals.set(0);
+        }
+        if (struct.isSetDigest()) {
+          optionals.set(1);
+        }
+        if (struct.isSetOptions()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetBlockId()) {
+          oprot.writeI64(struct.blockId);
+        }
+        if (struct.isSetDigest()) {
+          oprot.writeString(struct.digest);
+        }
+        if (struct.isSetOptions()) {
+          struct.options.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, blockChecksumStore_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(3);
+        if (incoming.get(0)) {
+          struct.blockId = iprot.readI64();
+          struct.setBlockIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.digest = iprot.readString();
+          struct.setDigestIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.options = new BlockChecksumStoreTOptions();
+          struct.options.read(iprot);
+          struct.setOptionsIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class blockChecksumStore_result implements org.apache.thrift.TBase<blockChecksumStore_result, blockChecksumStore_result._Fields>, java.io.Serializable, Cloneable, Comparable<blockChecksumStore_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("blockChecksumStore_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new blockChecksumStore_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new blockChecksumStore_resultTupleSchemeFactory());
+    }
+
+    private BlockChecksumStoreTResponse success; // required
+    private alluxio.thrift.AlluxioTException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, BlockChecksumStoreTResponse.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(blockChecksumStore_result.class, metaDataMap);
+    }
+
+    public blockChecksumStore_result() {
+    }
+
+    public blockChecksumStore_result(
+      BlockChecksumStoreTResponse success,
+      alluxio.thrift.AlluxioTException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public blockChecksumStore_result(blockChecksumStore_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new BlockChecksumStoreTResponse(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new alluxio.thrift.AlluxioTException(other.e);
+      }
+    }
+
+    public blockChecksumStore_result deepCopy() {
+      return new blockChecksumStore_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public BlockChecksumStoreTResponse getSuccess() {
+      return this.success;
+    }
+
+    public blockChecksumStore_result setSuccess(BlockChecksumStoreTResponse success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public alluxio.thrift.AlluxioTException getE() {
+      return this.e;
+    }
+
+    public blockChecksumStore_result setE(alluxio.thrift.AlluxioTException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((BlockChecksumStoreTResponse)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((alluxio.thrift.AlluxioTException)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof blockChecksumStore_result)
+        return this.equals((blockChecksumStore_result)that);
+      return false;
+    }
+
+    public boolean equals(blockChecksumStore_result that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_success = true && (isSetSuccess());
+      list.add(present_success);
+      if (present_success)
+        list.add(success);
+
+      boolean present_e = true && (isSetE());
+      list.add(present_e);
+      if (present_e)
+        list.add(e);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(blockChecksumStore_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("blockChecksumStore_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class blockChecksumStore_resultStandardSchemeFactory implements SchemeFactory {
+      public blockChecksumStore_resultStandardScheme getScheme() {
+        return new blockChecksumStore_resultStandardScheme();
+      }
+    }
+
+    private static class blockChecksumStore_resultStandardScheme extends StandardScheme<blockChecksumStore_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, blockChecksumStore_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new BlockChecksumStoreTResponse();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new alluxio.thrift.AlluxioTException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, blockChecksumStore_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class blockChecksumStore_resultTupleSchemeFactory implements SchemeFactory {
+      public blockChecksumStore_resultTupleScheme getScheme() {
+        return new blockChecksumStore_resultTupleScheme();
+      }
+    }
+
+    private static class blockChecksumStore_resultTupleScheme extends TupleScheme<blockChecksumStore_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, blockChecksumStore_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, blockChecksumStore_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new BlockChecksumStoreTResponse();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new alluxio.thrift.AlluxioTException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class blockConsitencyCheck_args implements org.apache.thrift.TBase<blockConsitencyCheck_args, blockConsitencyCheck_args._Fields>, java.io.Serializable, Cloneable, Comparable<blockConsitencyCheck_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("blockConsitencyCheck_args");
+
+    private static final org.apache.thrift.protocol.TField BLOCK_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("blockId", org.apache.thrift.protocol.TType.I64, (short)1);
+    private static final org.apache.thrift.protocol.TField DIGEST_FIELD_DESC = new org.apache.thrift.protocol.TField("digest", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField OPTIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("options", org.apache.thrift.protocol.TType.STRUCT, (short)3);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new blockConsitencyCheck_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new blockConsitencyCheck_argsTupleSchemeFactory());
+    }
+
+    private long blockId; // required
+    private String digest; // required
+    private BlockConsitencyCheckTOptions options; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      /**
+       * the id of the block
+       */
+      BLOCK_ID((short)1, "blockId"),
+      /**
+       * the digest of the block
+       */
+      DIGEST((short)2, "digest"),
+      /**
+       * the method options
+       */
+      OPTIONS((short)3, "options");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // BLOCK_ID
+            return BLOCK_ID;
+          case 2: // DIGEST
+            return DIGEST;
+          case 3: // OPTIONS
+            return OPTIONS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __BLOCKID_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.BLOCK_ID, new org.apache.thrift.meta_data.FieldMetaData("blockId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+      tmpMap.put(_Fields.DIGEST, new org.apache.thrift.meta_data.FieldMetaData("digest", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.OPTIONS, new org.apache.thrift.meta_data.FieldMetaData("options", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, BlockConsitencyCheckTOptions.class)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(blockConsitencyCheck_args.class, metaDataMap);
+    }
+
+    public blockConsitencyCheck_args() {
+    }
+
+    public blockConsitencyCheck_args(
+      long blockId,
+      String digest,
+      BlockConsitencyCheckTOptions options)
+    {
+      this();
+      this.blockId = blockId;
+      setBlockIdIsSet(true);
+      this.digest = digest;
+      this.options = options;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public blockConsitencyCheck_args(blockConsitencyCheck_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.blockId = other.blockId;
+      if (other.isSetDigest()) {
+        this.digest = other.digest;
+      }
+      if (other.isSetOptions()) {
+        this.options = new BlockConsitencyCheckTOptions(other.options);
+      }
+    }
+
+    public blockConsitencyCheck_args deepCopy() {
+      return new blockConsitencyCheck_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setBlockIdIsSet(false);
+      this.blockId = 0;
+      this.digest = null;
+      this.options = null;
+    }
+
+    /**
+     * the id of the block
+     */
+    public long getBlockId() {
+      return this.blockId;
+    }
+
+    /**
+     * the id of the block
+     */
+    public blockConsitencyCheck_args setBlockId(long blockId) {
+      this.blockId = blockId;
+      setBlockIdIsSet(true);
+      return this;
+    }
+
+    public void unsetBlockId() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __BLOCKID_ISSET_ID);
+    }
+
+    /** Returns true if field blockId is set (has been assigned a value) and false otherwise */
+    public boolean isSetBlockId() {
+      return EncodingUtils.testBit(__isset_bitfield, __BLOCKID_ISSET_ID);
+    }
+
+    public void setBlockIdIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __BLOCKID_ISSET_ID, value);
+    }
+
+    /**
+     * the digest of the block
+     */
+    public String getDigest() {
+      return this.digest;
+    }
+
+    /**
+     * the digest of the block
+     */
+    public blockConsitencyCheck_args setDigest(String digest) {
+      this.digest = digest;
+      return this;
+    }
+
+    public void unsetDigest() {
+      this.digest = null;
+    }
+
+    /** Returns true if field digest is set (has been assigned a value) and false otherwise */
+    public boolean isSetDigest() {
+      return this.digest != null;
+    }
+
+    public void setDigestIsSet(boolean value) {
+      if (!value) {
+        this.digest = null;
+      }
+    }
+
+    /**
+     * the method options
+     */
+    public BlockConsitencyCheckTOptions getOptions() {
+      return this.options;
+    }
+
+    /**
+     * the method options
+     */
+    public blockConsitencyCheck_args setOptions(BlockConsitencyCheckTOptions options) {
+      this.options = options;
+      return this;
+    }
+
+    public void unsetOptions() {
+      this.options = null;
+    }
+
+    /** Returns true if field options is set (has been assigned a value) and false otherwise */
+    public boolean isSetOptions() {
+      return this.options != null;
+    }
+
+    public void setOptionsIsSet(boolean value) {
+      if (!value) {
+        this.options = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case BLOCK_ID:
+        if (value == null) {
+          unsetBlockId();
+        } else {
+          setBlockId((Long)value);
+        }
+        break;
+
+      case DIGEST:
+        if (value == null) {
+          unsetDigest();
+        } else {
+          setDigest((String)value);
+        }
+        break;
+
+      case OPTIONS:
+        if (value == null) {
+          unsetOptions();
+        } else {
+          setOptions((BlockConsitencyCheckTOptions)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case BLOCK_ID:
+        return getBlockId();
+
+      case DIGEST:
+        return getDigest();
+
+      case OPTIONS:
+        return getOptions();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case BLOCK_ID:
+        return isSetBlockId();
+      case DIGEST:
+        return isSetDigest();
+      case OPTIONS:
+        return isSetOptions();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof blockConsitencyCheck_args)
+        return this.equals((blockConsitencyCheck_args)that);
+      return false;
+    }
+
+    public boolean equals(blockConsitencyCheck_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_blockId = true;
+      boolean that_present_blockId = true;
+      if (this_present_blockId || that_present_blockId) {
+        if (!(this_present_blockId && that_present_blockId))
+          return false;
+        if (this.blockId != that.blockId)
+          return false;
+      }
+
+      boolean this_present_digest = true && this.isSetDigest();
+      boolean that_present_digest = true && that.isSetDigest();
+      if (this_present_digest || that_present_digest) {
+        if (!(this_present_digest && that_present_digest))
+          return false;
+        if (!this.digest.equals(that.digest))
+          return false;
+      }
+
+      boolean this_present_options = true && this.isSetOptions();
+      boolean that_present_options = true && that.isSetOptions();
+      if (this_present_options || that_present_options) {
+        if (!(this_present_options && that_present_options))
+          return false;
+        if (!this.options.equals(that.options))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_blockId = true;
+      list.add(present_blockId);
+      if (present_blockId)
+        list.add(blockId);
+
+      boolean present_digest = true && (isSetDigest());
+      list.add(present_digest);
+      if (present_digest)
+        list.add(digest);
+
+      boolean present_options = true && (isSetOptions());
+      list.add(present_options);
+      if (present_options)
+        list.add(options);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(blockConsitencyCheck_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetBlockId()).compareTo(other.isSetBlockId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetBlockId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.blockId, other.blockId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetDigest()).compareTo(other.isSetDigest());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetDigest()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.digest, other.digest);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetOptions()).compareTo(other.isSetOptions());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOptions()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.options, other.options);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("blockConsitencyCheck_args(");
+      boolean first = true;
+
+      sb.append("blockId:");
+      sb.append(this.blockId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("digest:");
+      if (this.digest == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.digest);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("options:");
+      if (this.options == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.options);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (options != null) {
+        options.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class blockConsitencyCheck_argsStandardSchemeFactory implements SchemeFactory {
+      public blockConsitencyCheck_argsStandardScheme getScheme() {
+        return new blockConsitencyCheck_argsStandardScheme();
+      }
+    }
+
+    private static class blockConsitencyCheck_argsStandardScheme extends StandardScheme<blockConsitencyCheck_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, blockConsitencyCheck_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // BLOCK_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
+                struct.blockId = iprot.readI64();
+                struct.setBlockIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // DIGEST
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.digest = iprot.readString();
+                struct.setDigestIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // OPTIONS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.options = new BlockConsitencyCheckTOptions();
+                struct.options.read(iprot);
+                struct.setOptionsIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, blockConsitencyCheck_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(BLOCK_ID_FIELD_DESC);
+        oprot.writeI64(struct.blockId);
+        oprot.writeFieldEnd();
+        if (struct.digest != null) {
+          oprot.writeFieldBegin(DIGEST_FIELD_DESC);
+          oprot.writeString(struct.digest);
+          oprot.writeFieldEnd();
+        }
+        if (struct.options != null) {
+          oprot.writeFieldBegin(OPTIONS_FIELD_DESC);
+          struct.options.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class blockConsitencyCheck_argsTupleSchemeFactory implements SchemeFactory {
+      public blockConsitencyCheck_argsTupleScheme getScheme() {
+        return new blockConsitencyCheck_argsTupleScheme();
+      }
+    }
+
+    private static class blockConsitencyCheck_argsTupleScheme extends TupleScheme<blockConsitencyCheck_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, blockConsitencyCheck_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetBlockId()) {
+          optionals.set(0);
+        }
+        if (struct.isSetDigest()) {
+          optionals.set(1);
+        }
+        if (struct.isSetOptions()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetBlockId()) {
+          oprot.writeI64(struct.blockId);
+        }
+        if (struct.isSetDigest()) {
+          oprot.writeString(struct.digest);
+        }
+        if (struct.isSetOptions()) {
+          struct.options.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, blockConsitencyCheck_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(3);
+        if (incoming.get(0)) {
+          struct.blockId = iprot.readI64();
+          struct.setBlockIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.digest = iprot.readString();
+          struct.setDigestIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.options = new BlockConsitencyCheckTOptions();
+          struct.options.read(iprot);
+          struct.setOptionsIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class blockConsitencyCheck_result implements org.apache.thrift.TBase<blockConsitencyCheck_result, blockConsitencyCheck_result._Fields>, java.io.Serializable, Cloneable, Comparable<blockConsitencyCheck_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("blockConsitencyCheck_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new blockConsitencyCheck_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new blockConsitencyCheck_resultTupleSchemeFactory());
+    }
+
+    private BlockConsitencyCheckTResponse success; // required
+    private alluxio.thrift.AlluxioTException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, BlockConsitencyCheckTResponse.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(blockConsitencyCheck_result.class, metaDataMap);
+    }
+
+    public blockConsitencyCheck_result() {
+    }
+
+    public blockConsitencyCheck_result(
+      BlockConsitencyCheckTResponse success,
+      alluxio.thrift.AlluxioTException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public blockConsitencyCheck_result(blockConsitencyCheck_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new BlockConsitencyCheckTResponse(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new alluxio.thrift.AlluxioTException(other.e);
+      }
+    }
+
+    public blockConsitencyCheck_result deepCopy() {
+      return new blockConsitencyCheck_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public BlockConsitencyCheckTResponse getSuccess() {
+      return this.success;
+    }
+
+    public blockConsitencyCheck_result setSuccess(BlockConsitencyCheckTResponse success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public alluxio.thrift.AlluxioTException getE() {
+      return this.e;
+    }
+
+    public blockConsitencyCheck_result setE(alluxio.thrift.AlluxioTException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((BlockConsitencyCheckTResponse)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((alluxio.thrift.AlluxioTException)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof blockConsitencyCheck_result)
+        return this.equals((blockConsitencyCheck_result)that);
+      return false;
+    }
+
+    public boolean equals(blockConsitencyCheck_result that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_success = true && (isSetSuccess());
+      list.add(present_success);
+      if (present_success)
+        list.add(success);
+
+      boolean present_e = true && (isSetE());
+      list.add(present_e);
+      if (present_e)
+        list.add(e);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(blockConsitencyCheck_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("blockConsitencyCheck_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class blockConsitencyCheck_resultStandardSchemeFactory implements SchemeFactory {
+      public blockConsitencyCheck_resultStandardScheme getScheme() {
+        return new blockConsitencyCheck_resultStandardScheme();
+      }
+    }
+
+    private static class blockConsitencyCheck_resultStandardScheme extends StandardScheme<blockConsitencyCheck_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, blockConsitencyCheck_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new BlockConsitencyCheckTResponse();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new alluxio.thrift.AlluxioTException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, blockConsitencyCheck_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class blockConsitencyCheck_resultTupleSchemeFactory implements SchemeFactory {
+      public blockConsitencyCheck_resultTupleScheme getScheme() {
+        return new blockConsitencyCheck_resultTupleScheme();
+      }
+    }
+
+    private static class blockConsitencyCheck_resultTupleScheme extends TupleScheme<blockConsitencyCheck_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, blockConsitencyCheck_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, blockConsitencyCheck_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new BlockConsitencyCheckTResponse();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }

@@ -73,4 +73,22 @@ public interface BlockMasterClient extends Client {
    * @return amount of used space in bytes
    */
   long getUsedBytes() throws IOException;
+
+  /**
+   *
+   * @param blockId
+   * @param digest
+   * @throws IOException
+   */
+
+  void blockChecksumStore(final long blockId, String digest) throws IOException;
+
+  /**
+   *
+   * @param blockId
+   * @param digest
+   * @return boolean
+   * @throws IOException
+   */
+  boolean blockConsitencyCheck(final long blockId, String digest) throws IOException;
 }

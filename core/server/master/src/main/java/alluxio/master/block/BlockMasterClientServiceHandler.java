@@ -17,19 +17,7 @@ import alluxio.RpcUtils.RpcCallable;
 import alluxio.RpcUtils.RpcCallableThrowsIOException;
 import alluxio.exception.AlluxioException;
 import alluxio.exception.status.AlluxioStatusException;
-import alluxio.thrift.AlluxioTException;
-import alluxio.thrift.BlockMasterClientService;
-import alluxio.thrift.GetBlockInfoTOptions;
-import alluxio.thrift.GetBlockInfoTResponse;
-import alluxio.thrift.GetCapacityBytesTOptions;
-import alluxio.thrift.GetCapacityBytesTResponse;
-import alluxio.thrift.GetServiceVersionTOptions;
-import alluxio.thrift.GetServiceVersionTResponse;
-import alluxio.thrift.GetUsedBytesTOptions;
-import alluxio.thrift.GetUsedBytesTResponse;
-import alluxio.thrift.GetWorkerInfoListTOptions;
-import alluxio.thrift.GetWorkerInfoListTResponse;
-import alluxio.thrift.WorkerInfo;
+import alluxio.thrift.*;
 import alluxio.wire.ThriftUtils;
 
 import com.google.common.base.Preconditions;
@@ -114,6 +102,39 @@ public final class BlockMasterClientServiceHandler implements BlockMasterClientS
         return String.format("getUsedBytes: options=%s", options);
       }
     });
+  }
+
+  @Override
+  public BlockChecksumStoreTResponse blockChecksumStore(long blockId,
+      String digest, BlockChecksumStoreTOptions options)
+      throws AlluxioTException {
+    return RpcUtils.call(LOG, new RpcCallable<BlockChecksumStoreTResponse>() {
+      @Override
+      public BlockChecksumStoreTResponse call() throws AlluxioException {
+
+        return new BlockChecksumStoreTResponse();
+      }
+
+      @Override
+      public String toString() { return String.format("blockChecksumStore: options=%s",options); }
+    });
+  }
+
+  @Override
+  public BlockConsitencyCheckTResponse blockConsitencyCheck(long blockId,
+      String digest, BlockConsitencyCheckTOptions options)
+      throws AlluxioTException {
+    return RpcUtils.call(LOG, new RpcCallable<BlockConsitencyCheckTResponse>() {
+      @Override
+      public BlockConsitencyCheckTResponse call() throws AlluxioException {
+        return new BlockConsitencyCheckTResponse(blockId, true);
+      }
+
+      @Override
+      public String toString() { return String.format("blockConsistencyCheck: options=%s",
+              options); }
+    });
+
   }
 
   @Override
