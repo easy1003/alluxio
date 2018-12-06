@@ -193,6 +193,21 @@ public interface BlockMaster extends Master, ContainerIdGenerable {
   void cacheFailedDecrease(long blockId, String workerHostname);
 
   /**
+   * blockchecksumstore
+   * @param blockId
+   * @param digest
+   */
+  void blockChecksumStore(long blockId, String digest);
+
+  /**
+   *
+   * @param blockId
+   * @param digest
+   * @return
+   */
+  boolean blockConsistencyCheck(long blockId, String digest);
+
+  /**
    * clearCacheBlockInfoByID.
    *
    * @param blockId the ids of the lost blocks

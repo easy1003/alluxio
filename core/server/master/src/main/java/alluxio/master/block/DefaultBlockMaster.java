@@ -552,6 +552,17 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
   }
 
   @Override
+  public void blockChecksumStore(long blockId, String digest) {
+    //todo
+  }
+
+  @Override
+  public boolean blockConsistencyCheck(long blockId, String digest) {
+    //todo
+    return true;
+  }
+
+  @Override
   public void clearCacheBlockInfoByID(long blockId) {
     HashSet<String> newSet = new HashSet<>();
     HashSet<String> count = mBlockCacheInfo.putIfAbsent(blockId, newSet);

@@ -282,6 +282,11 @@ public class FileInStream extends InputStream implements BoundedStream, Position
     // Create stream
     mBlockInStream = mBlockStore.getInStream(blockId, mOptions, mFailedWorkers);
     // if ufs  blockchecksumstore
+    if (mBlockInStream.getSource() == BlockInStream.BlockInStreamSource.UFS) {
+
+    } else {
+
+    }
     // async
     // others blockconsistencycheck
     // log

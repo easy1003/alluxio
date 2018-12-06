@@ -108,6 +108,26 @@ public final class AlluxioBlockStore {
   }
 
   /**
+   *
+   * @param blockId
+   * @param digest
+   * @throws IOException
+   */
+  public void blockChecksumStore(long blockId, String digest) throws IOException {
+    try (CloseableResource<BlockMasterClient> masterClientResource =
+                 mContext.acquireBlockMasterClientResource()) {
+      masterClientResource.get().blockChecksumStore(blockId, digest);
+    }
+  }
+
+  public boolean blockConsistencyCheck(long blockId, String digest) throws IOException {
+    try (CloseableResource<BlockMasterClient> masterClientResource =
+                 mContext.acquireBlockMasterClientResource()) {
+      return masterClientResource.get().blockConsitencyCheck(blockId, digest);
+    }
+  }
+
+  /**
    * @return the info of all block workers eligible for reads and writes
    */
   public List<BlockWorkerInfo> getEligibleWorkers() throws IOException {
