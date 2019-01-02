@@ -18,6 +18,8 @@ import alluxio.annotation.PublicApi;
 import alluxio.client.BoundedStream;
 import alluxio.client.PositionedReadable;
 import alluxio.client.block.AlluxioBlockStore;
+import alluxio.client.block.BlockChecksumStore;
+import alluxio.client.block.BlockConsistencyCheck;
 import alluxio.client.block.stream.BlockInStream;
 import alluxio.client.file.options.InStreamOptions;
 import alluxio.exception.PreconditionMessage;
@@ -283,9 +285,17 @@ public class FileInStream extends InputStream implements BoundedStream, Position
     mBlockInStream = mBlockStore.getInStream(blockId, mOptions, mFailedWorkers);
     // if ufs  blockchecksumstore
     if (mBlockInStream.getSource() == BlockInStream.BlockInStreamSource.UFS) {
-
+      LOG.info("Get BlockInStream from UFS, blockId= {}", blockId);
+      BlockChecksumStore mBlockChecksumStore = new BlockChecksumStore(mBlockStore,
+              mFailedWorkers, mOptions, blockId);
+      mBlockChecksumStore.start();
+      LOG.info("mBlockChecksumStore is starting, time = %s", System.currentTimeMillis());
     } else {
-
+      LOG.info("Get BlockInStream from REMOTE or LOCAL, blockId= {}", blockId);
+      BlockConsistencyCheck mBlockConsistencyCheck = new BlockConsistencyCheck(mBlockStore,
+              mFailedWorkers, mOptions, blockId);
+      mBlockConsistencyCheck.start();
+      LOG.info("BlockConsistencyCheck  is starting, time = %s", System.currentTimeMillis());
     }
     // async
     // others blockconsistencycheck
