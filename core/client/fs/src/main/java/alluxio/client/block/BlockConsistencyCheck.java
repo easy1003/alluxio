@@ -1,8 +1,20 @@
+/*
+ * The Alluxio Open Foundation licenses this work under the Apache License, version 2.0
+ * (the "License"). You may not use this work except in compliance with the License, which is
+ * available at www.apache.org/licenses/LICENSE-2.0
+ *
+ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied, as more fully set forth in the License.
+ *
+ * See the NOTICE file distributed with this work for information regarding copyright ownership.
+ */
+
 package alluxio.client.block;
 
 import alluxio.client.block.stream.BlockInStream;
 import alluxio.client.file.options.InStreamOptions;
 import alluxio.wire.WorkerNetAddress;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,45 +25,54 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ *
+ * BlockConsistencyCheck is design for consistency check.
+ */
 public class BlockConsistencyCheck extends Thread {
-    private static final Logger LOG = LoggerFactory.getLogger(BlockConsistencyCheck.class);
-    long blockId;
-    private InStreamOptions mOptions;
-    private Map<WorkerNetAddress, Long> mFailedWorkers = new HashMap<>();
-    private AlluxioBlockStore mBlockStore;
-    private BlockInStream mBlockInStream;
-    private BlockChecksumCompute blockChecksumCompute;
+  private static final Logger LOG = LoggerFactory.getLogger(BlockConsistencyCheck.class);
+  long mBlockId;
+  private InStreamOptions mOptions;
+  private Map<WorkerNetAddress, Long> mFailedWorkers = new HashMap<>();
+  private AlluxioBlockStore mBlockStore;
+  private BlockInStream mBlockInStream;
+  private BlockChecksumCompute mBlockChecksumCompute;
 
-    public BlockConsistencyCheck(AlluxioBlockStore blockStore, Map<WorkerNetAddress, Long> mFiled,
-                                 InStreamOptions mOptions, long blockId) {
-        this.blockId = blockId;
-        this.mOptions = mOptions;
-        this.mFailedWorkers = mFiled;
-        this.mBlockStore = blockStore;
+  /**
+   *
+   * @param blockStore blockStore
+   * @param mFiled filed worker
+   * @param mOption options
+   * @param blockId block ID
+   */
+  public BlockConsistencyCheck(AlluxioBlockStore blockStore, Map<WorkerNetAddress, Long> mFiled,
+      InStreamOptions mOption, long blockId) {
+    mBlockId = blockId;
+    mOptions = mOption;
+    mFailedWorkers = mFiled;
+    mBlockStore = blockStore;
+  }
+
+  @Override
+  public void run() {
+    try {
+      init();
+      ExecutorService execPoll = Executors.newCachedThreadPool();
+      Future<String> result = execPoll.submit(mBlockChecksumCompute);
+      String digest = result.get();
+      boolean isConsitenct = mBlockStore.blockConsistencyCheck(mBlockId, digest);
+      if (isConsitenct) {
+        LOG.info("block {} is consistency. ", mBlockId);
+      } else {
+        LOG.info("block {} is inconsistency.", mBlockId);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+  }
 
-    @Override
-    public void run() {
-        try {
-            init();
-            ExecutorService execPoll = Executors.newCachedThreadPool();
-            Future<String> result = execPoll.submit(blockChecksumCompute);
-            String digest = result.get();
-            boolean isConsitenct = mBlockStore.blockConsistencyCheck(blockId, digest);
-
-            if (isConsitenct) {
-                LOG.info("block {} is consistency. ", blockId);
-            } else {
-                LOG.info("block {} is inconsistency.", blockId);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void init() throws IOException {
-        this.mBlockInStream = mBlockStore.getInStream(blockId, mOptions, mFailedWorkers);
-        this.blockChecksumCompute = new BlockChecksumCompute(mBlockInStream);
-    }
+  private void init() throws IOException {
+    mBlockInStream = mBlockStore.getInStream(mBlockId, mOptions, mFailedWorkers);
+    mBlockChecksumCompute = new BlockChecksumCompute(mBlockInStream);
+  }
 }

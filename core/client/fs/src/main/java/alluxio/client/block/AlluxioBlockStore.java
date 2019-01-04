@@ -109,8 +109,8 @@ public final class AlluxioBlockStore {
 
   /**
    *
-   * @param blockId
-   * @param digest
+   * @param blockId the blockId to obtain information about
+   * @param digest the digest
    * @throws IOException
    */
   public void blockChecksumStore(long blockId, String digest) throws IOException {
@@ -120,6 +120,13 @@ public final class AlluxioBlockStore {
     }
   }
 
+    /**
+     *
+     * @param blockId the blockId to obtain information about
+     * @param digest the digest
+     * @return whether is consistency
+     * @throws IOException
+     */
   public boolean blockConsistencyCheck(long blockId, String digest) throws IOException {
     try (CloseableResource<BlockMasterClient> masterClientResource =
                  mContext.acquireBlockMasterClientResource()) {

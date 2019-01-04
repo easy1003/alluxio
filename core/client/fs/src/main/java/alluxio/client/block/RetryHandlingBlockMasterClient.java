@@ -113,6 +113,7 @@ public final class RetryHandlingBlockMasterClient extends AbstractMasterClient
    * Returns the {@link BlockInfo} for a block id.
    *
    * @param blockId the block id to get the BlockInfo for
+   * @param digest the digest
    */
   public synchronized void blockChecksumStore(final long blockId, String digest)
           throws IOException {
@@ -125,6 +126,13 @@ public final class RetryHandlingBlockMasterClient extends AbstractMasterClient
     });
   }
 
+    /**
+     *
+     * @param blockId the block id to get the BlockInfo for
+     * @param digest the digest
+     * @return whether is consistency
+     * @throws IOException
+     */
   public synchronized boolean blockConsitencyCheck(final long blockId, String digest)
           throws IOException {
     return retryRPC(new RpcCallable<Boolean>() {

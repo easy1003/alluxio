@@ -17,7 +17,25 @@ import alluxio.RpcUtils.RpcCallable;
 import alluxio.RpcUtils.RpcCallableThrowsIOException;
 import alluxio.exception.AlluxioException;
 import alluxio.exception.status.AlluxioStatusException;
-import alluxio.thrift.*;
+import alluxio.thrift.AlluxioTException;
+import alluxio.thrift.BlockMasterClientService;
+
+import alluxio.thrift.GetBlockInfoTOptions;
+import alluxio.thrift.GetBlockInfoTResponse;
+
+import alluxio.thrift.GetCapacityBytesTOptions;
+import alluxio.thrift.GetCapacityBytesTResponse;
+import alluxio.thrift.GetServiceVersionTOptions;
+import alluxio.thrift.GetServiceVersionTResponse;
+import alluxio.thrift.GetUsedBytesTOptions;
+import alluxio.thrift.GetUsedBytesTResponse;
+import alluxio.thrift.GetWorkerInfoListTOptions;
+import alluxio.thrift.GetWorkerInfoListTResponse;
+import alluxio.thrift.BlockChecksumStoreTOptions;
+import alluxio.thrift.BlockChecksumStoreTResponse;
+import alluxio.thrift.BlockConsitencyCheckTResponse;
+import alluxio.thrift.BlockConsitencyCheckTOptions;
+import alluxio.thrift.WorkerInfo;
 import alluxio.wire.ThriftUtils;
 
 import com.google.common.base.Preconditions;
@@ -111,12 +129,13 @@ public final class BlockMasterClientServiceHandler implements BlockMasterClientS
     return RpcUtils.call(LOG, new RpcCallable<BlockChecksumStoreTResponse>() {
       @Override
       public BlockChecksumStoreTResponse call() throws AlluxioException {
-
         return new BlockChecksumStoreTResponse();
       }
 
       @Override
-      public String toString() { return String.format("blockChecksumStore: options=%s",options); }
+      public String toString() {
+        return String.format("blockChecksumStore: options=%s", options);
+      }
     });
   }
 
@@ -131,8 +150,9 @@ public final class BlockMasterClientServiceHandler implements BlockMasterClientS
       }
 
       @Override
-      public String toString() { return String.format("blockConsistencyCheck: options=%s",
-              options); }
+      public String toString() {
+        return String.format("blockConsistencyCheck: options=%s", options);
+      }
     });
 
   }

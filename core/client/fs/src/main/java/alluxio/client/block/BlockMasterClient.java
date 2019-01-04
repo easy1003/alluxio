@@ -76,8 +76,8 @@ public interface BlockMasterClient extends Client {
 
   /**
    *
-   * @param blockId
-   * @param digest
+   * @param blockId the block id to get the BlockInfo for
+   * @param digest the digest
    * @throws IOException
    */
 
@@ -85,8 +85,8 @@ public interface BlockMasterClient extends Client {
 
   /**
    *
-   * @param blockId
-   * @param digest
+   * @param blockId the block id to get the BlockInfo for
+   * @param digest the digest
    * @return boolean
    * @throws IOException
    */
