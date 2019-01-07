@@ -138,7 +138,6 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   private final ConcurrentHashMap<Long, HashSet<String>> mBlockCacheInfo =
       new ConcurrentHashMap<>(8192, 0.90f, 64);
-  
   private final ConcurrentHashMap<Long, String> mBlockChecksum =
       new ConcurrentHashMap<>(8192, 0.90f, 64);
   /** This state must be journaled. */
