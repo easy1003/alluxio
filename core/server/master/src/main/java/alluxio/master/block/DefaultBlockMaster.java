@@ -138,7 +138,9 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   private final ConcurrentHashMap<Long, HashSet<String>> mBlockCacheInfo =
       new ConcurrentHashMap<>(8192, 0.90f, 64);
-
+  
+  private final ConcurrentHashMap<Long, String> mBlockChecksum =
+      new ConcurrentHashMap<>(8192, 0.90f, 64);
   /** This state must be journaled. */
   @GuardedBy("itself")
   private final BlockContainerIdGenerator mBlockContainerIdGenerator =
@@ -553,13 +555,21 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   @Override
   public void blockChecksumStore(long blockId, String digest) {
-    //todo
+    LOG.info("Store Checksum, block ID {}, checksum {}.", blockId, digest);
+    mBlockChecksum.putIfAbsent(blockId, digest);
   }
 
   @Override
   public boolean blockConsistencyCheck(long blockId, String digest) {
-    //todo
-    return true;
+    LOG.info("block consistency checking, block id {}, digest {}.", blockId, digest);
+    boolean checkResult = true;
+    String blockChecksum = mBlockChecksum.get(blockId);
+    synchronized (blockChecksum) {
+      if (!blockChecksum.equals(digest)) {
+        checkResult = false;
+      }
+    }
+    return checkResult;
   }
 
   @Override

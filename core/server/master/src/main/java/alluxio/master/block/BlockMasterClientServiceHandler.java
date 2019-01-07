@@ -129,6 +129,7 @@ public final class BlockMasterClientServiceHandler implements BlockMasterClientS
     return RpcUtils.call(LOG, new RpcCallable<BlockChecksumStoreTResponse>() {
       @Override
       public BlockChecksumStoreTResponse call() throws AlluxioException {
+        mBlockMaster.blockChecksumStore(blockId, digest);
         return new BlockChecksumStoreTResponse();
       }
 
@@ -146,7 +147,8 @@ public final class BlockMasterClientServiceHandler implements BlockMasterClientS
     return RpcUtils.call(LOG, new RpcCallable<BlockConsitencyCheckTResponse>() {
       @Override
       public BlockConsitencyCheckTResponse call() throws AlluxioException {
-        return new BlockConsitencyCheckTResponse(blockId, true);
+        return new BlockConsitencyCheckTResponse(blockId,
+          mBlockMaster.blockConsistencyCheck(blockId, digest));
       }
 
       @Override
