@@ -554,18 +554,20 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
 
   @Override
   public void blockChecksumStore(long blockId, String digest) {
-    LOG.info("Store Checksum, block ID {}, checksum {}.", blockId, digest);
+    LOG.info("Store Checksum, block ID {}, received checksum {}.", blockId, digest);
     mBlockChecksum.putIfAbsent(blockId, digest);
   }
 
   @Override
   public boolean blockConsistencyCheck(long blockId, String digest) {
-    LOG.info("block consistency checking, block id {}, digest {}.", blockId, digest);
+    LOG.info("block consistency checking, block id {}, the received digest {}.", blockId, digest);
     boolean checkResult = true;
     String blockChecksum = mBlockChecksum.get(blockId);
     synchronized (blockChecksum) {
       if (!blockChecksum.equals(digest)) {
         checkResult = false;
+        LOG.info("block {} is inconsistent, the right Checksum is {}, but now is {}.",
+          blockId, blockChecksum, digest);
       }
     }
     return checkResult;

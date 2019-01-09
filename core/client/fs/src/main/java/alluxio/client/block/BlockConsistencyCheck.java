@@ -15,6 +15,7 @@ import alluxio.client.block.stream.BlockInStream;
 import alluxio.client.file.options.InStreamOptions;
 import alluxio.wire.WorkerNetAddress;
 
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,7 @@ public class BlockConsistencyCheck extends Thread {
         LOG.info("block {} is consistency. ", mBlockId);
       } else {
         LOG.info("block {} is inconsistency.", mBlockId);
+          Preconditions.checkState(false, "block %s is inconsistent", mBlockId);
       }
     } catch (Exception e) {
       e.printStackTrace();
