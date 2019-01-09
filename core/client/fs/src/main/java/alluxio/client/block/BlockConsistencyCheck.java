@@ -66,7 +66,7 @@ public class BlockConsistencyCheck extends Thread {
         LOG.info("block {} is consistency. ", mBlockId);
       } else {
         LOG.info("block {} is inconsistency.", mBlockId);
-          Preconditions.checkState(false, "block %s is inconsistent", mBlockId);
+        Preconditions.checkState(false, "block %s is inconsistent", mBlockId);
       }
     } catch (Exception e) {
       e.printStackTrace();
