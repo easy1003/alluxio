@@ -567,7 +567,7 @@ public final class DefaultBlockMaster extends AbstractMaster implements BlockMas
       if (!blockChecksum.equals(digest)) {
         checkResult = false;
         LOG.info("block {} is inconsistent, the right Checksum is {}, but now is {}.",
-          blockId, blockChecksum, digest);
+            blockId, blockChecksum, digest);
       }
     }
     return checkResult;
