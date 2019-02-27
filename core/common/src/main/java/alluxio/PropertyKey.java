@@ -1902,8 +1902,32 @@ public final class PropertyKey implements Comparable<PropertyKey> {
                           + "alluxio.user.cache.limit.number is default by 3, user can configure"
                           + "the cache copy limit by their need.")
                   .build();
-
-  //
+  public static final PropertyKey USER_COPY_LIMIT_ENABLED =
+      new Builder(Name.USER_COPY_LIMIT_ENABLED)
+          .setDefaultValue(true)
+          .setDescription("alluxio.user.copy.limit.enable is set to open copy limit "
+              + "the number of cache copy will be limit by  "
+              + "alluxio.user.cache.limit.number")
+          .build();
+  public static final PropertyKey USER_SYNC_INTEGRITY_CHECK_ENABLE =
+      new Builder(Name.USER_SYNC_INTEGRITY_CHECK_ENABLE)
+          .setDefaultValue(false)
+          .setDescription("alluxio.user.sync.integrity.check.enable is set to enable synchronous"
+              + "integrity check")
+          .build();
+  public static final PropertyKey USER_ASYNC_INTEGRITY_CHECK_ENABLE =
+      new Builder(Name.USER_ASYNC_INTEGRITY_CHECK_ENABLE)
+          .setDefaultValue(true)
+          .setDescription("alluxio.user.async.integrity.check.enable is set to enable asynchronous"
+              + "integrity check")
+          .build();
+  public static final PropertyKey USER_INTEGRITY_CHECK_ENABLE =
+      new Builder(Name.USER_INTEGRITY_CHECK_ENABLE)
+          .setDefaultValue(true)
+          .setDescription("alluxio.user.integrity.check.enable is set to enable "
+              + "integrity check")
+          .build();
+    //
   // FUSE integration related properties
   //
   public static final PropertyKey FUSE_CACHED_PATHS_MAX =
@@ -2576,7 +2600,12 @@ public final class PropertyKey implements Comparable<PropertyKey> {
         "alluxio.user.ufs.block.read.concurrency.max";
     public static final String USER_SHORT_CIRCUIT_ENABLED = "alluxio.user.short.circuit.enabled";
     public static final String USER_CACHE_LIMIT_NUMBER = "alluxio.user.cache.limit.number";
-
+    public static final String USER_COPY_LIMIT_ENABLED = "alluxio.user.copy.limit.enabled";
+    public static final String USER_SYNC_INTEGRITY_CHECK_ENABLE =
+        "alluxio.user.sync.integrity.check.enable";
+    public static final String USER_ASYNC_INTEGRITY_CHECK_ENABLE =
+        "alluxio.user.async.integrity.check.enable";
+    public static final String USER_INTEGRITY_CHECK_ENABLE = "alluxio.user.integrity.check.enable";
     //
     // FUSE integration related properties
     //

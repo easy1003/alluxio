@@ -283,24 +283,37 @@ public class FileInStream extends InputStream implements BoundedStream, Position
     long blockId = mStatus.getBlockIds().get(Math.toIntExact(mPosition / mBlockSize));
     // Create stream
     mBlockInStream = mBlockStore.getInStream(blockId, mOptions, mFailedWorkers);
-    // if ufs  blockchecksumstore
-    if (mBlockInStream.getSource() == BlockInStream.BlockInStreamSource.UFS) {
-      LOG.info("Get BlockInStream from UFS, blockId= {}", blockId);
-      BlockChecksumStore mBlockChecksumStore = new BlockChecksumStore(mBlockStore,
+    boolean integrityCheckEnable = Configuration
+        .getBoolean(PropertyKey.USER_INTEGRITY_CHECK_ENABLE);
+    boolean asyncIntegrityChcekEnable = Configuration
+        .getBoolean(PropertyKey.USER_ASYNC_INTEGRITY_CHECK_ENABLE);
+    boolean syncIntegrityCheckEnable = Configuration
+        .getBoolean(PropertyKey.USER_SYNC_INTEGRITY_CHECK_ENABLE);
+    if (integrityCheckEnable) {
+      // if ufs  blockchecksumstore
+      if (asyncIntegrityChcekEnable) {
+        if (mBlockInStream.getSource() == BlockInStream.BlockInStreamSource.UFS) {
+          LOG.info("Get BlockInStream from UFS, blockId= {}", blockId);
+          BlockChecksumStore mBlockChecksumStore = new BlockChecksumStore(mBlockStore,
               mFailedWorkers, mOptions, blockId);
-      mBlockChecksumStore.start();
-      LOG.info("mBlockChecksumStore is starting, time = %s", System.currentTimeMillis());
-    } else {
-      LOG.info("Get BlockInStream from REMOTE or LOCAL, blockId= {}", blockId);
-      BlockConsistencyCheck mBlockConsistencyCheck = new BlockConsistencyCheck(mBlockStore,
+          mBlockChecksumStore.start();
+          LOG.info("mBlockChecksumStore is starting, time = %s", System.currentTimeMillis());
+        } else {
+          LOG.info("Get BlockInStream from REMOTE or LOCAL, blockId= {}", blockId);
+          BlockConsistencyCheck mBlockConsistencyCheck = new BlockConsistencyCheck(mBlockStore,
               mFailedWorkers, mOptions, blockId);
-      mBlockConsistencyCheck.start();
-      LOG.info("BlockConsistencyCheck  is starting, time = %s", System.currentTimeMillis());
+          mBlockConsistencyCheck.start();
+          LOG.info("BlockConsistencyCheck  is starting, time = %s", System.currentTimeMillis());
+        }
+      }
+      // todo syncintegritycheck
+      if (syncIntegrityCheckEnable) {
+        //
+      }
     }
     // async
     // others blockconsistencycheck
     // log
-
     // Set the stream to the correct position.
     long offset = mPosition % mBlockSize;
     mBlockInStream.seek(offset);

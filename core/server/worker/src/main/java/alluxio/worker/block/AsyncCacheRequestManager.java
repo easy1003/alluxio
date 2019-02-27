@@ -11,6 +11,8 @@
 
 package alluxio.worker.block;
 
+import alluxio.Configuration;
+import alluxio.PropertyKey;
 import alluxio.Constants;
 import alluxio.Sessions;
 import alluxio.StorageTierAssoc;
@@ -76,7 +78,16 @@ public class AsyncCacheRequestManager {
     LOG.info("try to getCachePermission, blockId {}",
             blockId);
     String lWorker = mLocalWorkerHostname;
-    if (mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID, blockId, lWorker)) {
+    boolean copyLimitEnable = Configuration.getBoolean(PropertyKey.USER_COPY_LIMIT_ENABLED);
+    boolean isCache = true;
+    if (copyLimitEnable) {
+      isCache = mBlockWorker.getCachePermission(Sessions.ACCESS_BLOCK_SESSION_ID,
+          blockId, lWorker);
+    }
+    if (copyLimitEnable) {
+      LOG.info("isCache get permission from master {}", isCache);
+    }
+    if (isCache) {
       try {
         LOG.warn("{} start to request cache", blockId);
         mAsyncCacheExecutor.submit(() -> {
