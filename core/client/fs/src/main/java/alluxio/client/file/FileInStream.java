@@ -18,6 +18,7 @@ import alluxio.annotation.PublicApi;
 import alluxio.client.BoundedStream;
 import alluxio.client.PositionedReadable;
 import alluxio.client.block.AlluxioBlockStore;
+import alluxio.client.block.BlockChecksumCompute;
 import alluxio.client.block.BlockChecksumStore;
 import alluxio.client.block.BlockConsistencyCheck;
 import alluxio.client.block.stream.BlockInStream;
@@ -42,6 +43,9 @@ import java.io.InputStream;
 import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -308,7 +312,39 @@ public class FileInStream extends InputStream implements BoundedStream, Position
       }
       // todo syncintegritycheck
       if (syncIntegrityCheckEnable) {
-        //
+        BlockInStream  mBlockInStreamSync;
+        BlockChecksumCompute mBlockChecksumCompute;
+        ExecutorService execPoll = Executors.newCachedThreadPool();
+        if (mBlockInStream.getSource() == BlockInStream.BlockInStreamSource.UFS) {
+          LOG.info("SyncIntegrityCheck, Get BlockInStream from UFS, blockId= {}", blockId);
+          mBlockInStreamSync = mBlockStore.getInStream(blockId, mOptions, mFailedWorkers);
+          mBlockChecksumCompute = new BlockChecksumCompute(mBlockInStreamSync);
+          try {
+            Future<String> result = execPoll.submit(mBlockChecksumCompute);
+            String digest = result.get();
+            mBlockStore.blockChecksumStore(blockId, digest);
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        } else {
+          LOG.info("SyncIntegrityCheck, Get BlockInStream from REMOTE or LOCAL, blockId= {}",
+              blockId);
+          mBlockInStreamSync = mBlockStore.getInStream(blockId, mOptions, mFailedWorkers);
+          mBlockChecksumCompute = new BlockChecksumCompute(mBlockInStreamSync);
+          try {
+            Future<String> result = execPoll.submit(mBlockChecksumCompute);
+            String digest = result.get();
+            boolean isConsitenct = mBlockStore.blockConsistencyCheck(blockId, digest);
+            if (isConsitenct) {
+              LOG.info("syncIntegrityCheck block {} is consistency. ", blockId);
+            } else {
+              LOG.error("syncIntegrityCheck block {} is inconsistency.", blockId);
+              Preconditions.checkState(false, "block %s is inconsistent", blockId);
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
       }
     }
     // async
