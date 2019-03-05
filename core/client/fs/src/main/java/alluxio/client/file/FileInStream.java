@@ -156,13 +156,7 @@ public class FileInStream extends InputStream implements BoundedStream, Position
     int currentOffset = off;
     CountingRetry retry = new CountingRetry(MAX_WORKERS_TO_RETRY);
     while (bytesLeft > 0 && mPosition != mLength) {
-      try {
-        updateStream();
-      } catch (Exception e) {
-        LOG.warn("Catch Exception e");
-        e.printStackTrace();
-        return -1;
-      }
+      updateStream();
       try {
         int bytesRead = mBlockInStream.read(b, currentOffset, bytesLeft);
         if (bytesRead > 0) {
@@ -321,6 +315,7 @@ public class FileInStream extends InputStream implements BoundedStream, Position
         BlockInStream  mBlockInStreamSync;
         BlockChecksumCompute mBlockChecksumCompute;
         ExecutorService execPoll = Executors.newCachedThreadPool();
+        boolean isConsitency = true;
         if (mBlockInStream.getSource() == BlockInStream.BlockInStreamSource.UFS) {
           LOG.info("SyncIntegrityCheck, Get BlockInStream from UFS, blockId= {}", blockId);
           mBlockInStreamSync = mBlockStore.getInStream(blockId, mOptions, mFailedWorkers);
@@ -340,18 +335,18 @@ public class FileInStream extends InputStream implements BoundedStream, Position
           try {
             Future<String> result = execPoll.submit(mBlockChecksumCompute);
             String digest = result.get();
-            boolean isConsitenct = mBlockStore.blockConsistencyCheck(blockId, digest);
-            if (isConsitenct) {
-              LOG.info("syncIntegrityCheck block {} is consistency. ", blockId);
-            } else {
-              LOG.error("syncIntegrityCheck block {} is inconsistency.", blockId);
-              LOG.warn("ready to throw exception");
-              throw new IllegalStateException("test");
-              //Preconditions.checkState(false, "block %s is inconsistent", blockId);
-            }
+            isConsitency = mBlockStore.blockConsistencyCheck(blockId, digest);
           } catch (Exception e) {
             LOG.warn("get exception");
             e.printStackTrace();
+          }
+          if (isConsitency) {
+            LOG.info("syncIntegrityCheck block {} is consistency. ", blockId);
+          } else {
+            LOG.error("syncIntegrityCheck block {} is inconsistency.", blockId);
+            LOG.warn("ready to throw exception");
+            //throw new IllegalStateException("test");
+            Preconditions.checkState(false, "block %s is inconsistent", blockId);
           }
         }
       }
