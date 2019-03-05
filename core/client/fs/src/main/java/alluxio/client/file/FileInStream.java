@@ -339,9 +339,12 @@ public class FileInStream extends InputStream implements BoundedStream, Position
               LOG.info("syncIntegrityCheck block {} is consistency. ", blockId);
             } else {
               LOG.error("syncIntegrityCheck block {} is inconsistency.", blockId);
-              Preconditions.checkState(false, "block %s is inconsistent", blockId);
+              LOG.warn("ready to throw exception");
+              throw new IllegalStateException("test");
+              //Preconditions.checkState(false, "block %s is inconsistent", blockId);
             }
           } catch (Exception e) {
+            LOG.warn("get exception");
             e.printStackTrace();
           }
         }
