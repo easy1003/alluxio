@@ -156,7 +156,13 @@ public class FileInStream extends InputStream implements BoundedStream, Position
     int currentOffset = off;
     CountingRetry retry = new CountingRetry(MAX_WORKERS_TO_RETRY);
     while (bytesLeft > 0 && mPosition != mLength) {
-      updateStream();
+      try {
+        updateStream();
+      } catch (Exception e) {
+        LOG.warn("Catch Exception e");
+        e.printStackTrace();
+        return -1;
+      }
       try {
         int bytesRead = mBlockInStream.read(b, currentOffset, bytesLeft);
         if (bytesRead > 0) {
