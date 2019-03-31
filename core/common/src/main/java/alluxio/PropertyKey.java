@@ -1927,6 +1927,12 @@ public final class PropertyKey implements Comparable<PropertyKey> {
           .setDescription("alluxio.user.integrity.check.enable is set to enable "
               + "integrity check")
           .build();
+  public static final PropertyKey USER_INTEGRITY_HASH_ALGORITHM =
+      new Builder(Name.USER_INTEGRITY_HASH_ALGORITHM)
+          .setDefaultValue(3)
+          .setDescription("alluxio.user.integrith.hash.algorithm is set to use a hash algorithm"
+              + "to compute data block digest.")
+          .build();
     //
   // FUSE integration related properties
   //
@@ -2606,6 +2612,7 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String USER_ASYNC_INTEGRITY_CHECK_ENABLE =
         "alluxio.user.async.integrity.check.enable";
     public static final String USER_INTEGRITY_CHECK_ENABLE = "alluxio.user.integrity.check.enable";
+    public static final String USER_INTEGRITY_HASH_ALGORITHM = "alluxio.user.integrity.hash.algorithm";
     //
     // FUSE integration related properties
     //
